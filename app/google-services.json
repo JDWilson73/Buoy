@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "569162437909",
+    "firebase_url": "https://buoy-b3db9.firebaseio.com",
+    "project_id": "buoy-b3db9",
+    "storage_bucket": "buoy-b3db9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569162437909:android:ce9b127b23d1527e82c51c",
+        "android_client_info": {
+          "package_name": "edu.neu.madcourse.buoy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "569162437909-1c3md5oo6396j9pq3n2feikmusohhu6r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX1cPTLosNRjkPHk2AJL7WqG4AHGEL0tQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "569162437909-1c3md5oo6396j9pq3n2feikmusohhu6r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
