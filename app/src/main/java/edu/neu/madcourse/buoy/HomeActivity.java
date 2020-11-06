@@ -10,12 +10,16 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
     Button btnLogout;
     FirebaseAuth mFirebaseAuth;
+    private DatabaseReference mDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,8 @@ public class HomeActivity extends AppCompatActivity {
         String username = mFirebaseAuth.getInstance().getCurrentUser().getEmail();
         String message = "welcome, " + username;
         user_welcome.setText(message);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
 
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
