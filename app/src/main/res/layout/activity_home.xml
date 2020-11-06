@@ -37,8 +37,20 @@
         android:text="Logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.925" />
+
+    <Button
+        android:id="@+id/sendStickerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send a sticker!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.373" />
+        app:layout_constraintVertical_bias="0.15" />
 </androidx.constraintlayout.widget.ConstraintLayout>

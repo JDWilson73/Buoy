@@ -17,6 +17,7 @@ import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
     Button btnLogout;
+    Button btnStickerGoTo;
     FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabase;
 
@@ -26,11 +27,21 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         btnLogout = findViewById(R.id.logout);
+        btnStickerGoTo = findViewById(R.id.sendStickerButton);
         TextView user_welcome = findViewById(R.id.textView2);
         String username = mFirebaseAuth.getInstance().getCurrentUser().getEmail();
         String message = "welcome, " + username;
         user_welcome.setText(message);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        btnStickerGoTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intoSticker = new Intent(HomeActivity.this,
+                        StickerSendActivity.class);
+                startActivity(intoSticker);
+            }
+        });
 
 
 
