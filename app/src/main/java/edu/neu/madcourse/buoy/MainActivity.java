@@ -18,18 +18,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     public EditText emailId, password;
     Button btnSignUp;
     Button btnSignIn;
     FirebaseAuth mFirebaseAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.editTextEmailAddress);
         password = findViewById(R.id.editTextPassword);
@@ -56,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String Email = emailId.getText().toString();
-                String pwd = password.getText().toString();
+                final String Email = emailId.getText().toString();
+                final String pwd = password.getText().toString();
                 if(Email.isEmpty()){
                     emailId.setError("please enter email address");
                     emailId.requestFocus();
@@ -75,8 +78,13 @@ public class MainActivity extends AppCompatActivity {
                                                 "Account Creation Failed!",
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
-                                        startActivity(new Intent(MainActivity.this,
-                                                HomeActivity.class));
+//                                       writeNewUser(mFirebaseAuth.getInstance().getCurrentUser().getEmail(), "squidward", "tentacles");
+                                        Intent get_data = new Intent(MainActivity.this,
+                                                FirstSignInActivity.class);
+                                        get_data.putExtra("email", Email);
+                                        get_data.putExtra("password", pwd);
+                                        startActivity(get_data);
+
 
                                     }
                                 }
@@ -93,4 +101,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }
