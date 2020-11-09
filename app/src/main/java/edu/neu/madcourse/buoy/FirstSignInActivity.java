@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -18,6 +19,8 @@ public class FirstSignInActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     TextView testing;
     Button mGetStartedButton;
+    String email, pwd;
+    FirebaseAuth mFirebaseAuth;
     public EditText firstName, lastName, userName;
 
 
@@ -25,14 +28,12 @@ public class FirstSignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_sign_in);
-
         // get data from email/password sign up page
         Bundle extras = getIntent().getExtras();
         if (extras != null){
-            String email = extras.getString("email");
-            String pwd = extras.getString("password");
+             email = extras.getString("email");
+             pwd = extras.getString("password");
         }
-        testing = findViewById(R.id.textView6);
         firstName = findViewById(R.id.editTextTextPersonFirstName);
         lastName = findViewById(R.id.editTextTextPersonLastName);
         userName = findViewById(R.id.editTextTextPersonUserName);
@@ -57,9 +58,11 @@ public class FirstSignInActivity extends AppCompatActivity {
                     userName.setError("username can't be empty");
                 }
                 else{
-//                    testing.setText(firstNameString+ "\n"+ lastNameString + "\n" + userNameString);
-                    writeNewUser(userNameString, firstNameString, lastNameString);
-                    startActivity(new Intent(FirstSignInActivity.this, HomeActivity.class));
+                    String uid = mFirebaseAuth.getInstance().getCurrentUser().getUid().toString();
+                    writeNewUser(uid, userNameString, firstNameString, lastNameString, email);
+                    Intent goHome = new Intent(FirstSignInActivity.this, HomeActivity.class);
+                    goHome.putExtra(userNameString, "username");
+                    startActivity(goHome);
                 }
             }
         });
@@ -68,10 +71,9 @@ public class FirstSignInActivity extends AppCompatActivity {
 
 
     }
-    private void writeNewUser(String userName, String firstName, String lastName) {
+    private void writeNewUser(String uid, String userName, String firstName, String lastName, String email) {
 
-        User user = new User(userName, firstName, lastName);
-
-        mDatabase.child("Users").child(userName).setValue(user);
+        User user = new User(uid, userName, firstName, lastName, email);
+        mDatabase.child("Users").child(uid).setValue(user);
     }
 }
