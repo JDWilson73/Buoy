@@ -74,6 +74,8 @@ public class User {
     public void setTotalStickers(int totalStickers) {
         this.totalStickers = totalStickers;
     }
+
+
 }
 
 
