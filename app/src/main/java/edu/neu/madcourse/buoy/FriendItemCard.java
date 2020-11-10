@@ -2,16 +2,19 @@ package edu.neu.madcourse.buoy;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.View;
 
 public class FriendItemCard implements Parcelable {
     private String userName;
     private String firstName;
     private String lastName;
+    private String userID;
 
-    public FriendItemCard(String userName, String firstName, String lastName){
+    public FriendItemCard(String userName, String firstName, String lastName, String userID){
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.userID = userID;
     }
 
     protected FriendItemCard(Parcel in){
@@ -57,4 +60,19 @@ public class FriendItemCard implements Parcelable {
         dest.writeString(firstName);
         dest.writeString(lastName);
     }
+
+
+
+//    @Override
+//    public void onClick(View view){
+//        switch (view.getId()){
+//            case R.id.do_it:
+//                break;
+//            case R.id.good_vibes:
+//                break;
+//            case R.id.keep_it_up:
+//                break;
+//
+//        }
+//    }
 }

@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="226dp"
         android:layout_margin="5dp">
 
         <TextView
@@ -33,6 +33,47 @@
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
             android:text="username" />
+
+        <ImageButton
+            android:id="@+id/do_it"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_below="@+id/username"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="19dp"
+            android:layout_marginBottom="21dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/doit" />
+
+        <ImageButton
+            android:id="@+id/good_vibes"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_below="@+id/username"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="19dp"
+            android:layout_marginBottom="21dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/goodvibes" />
+
+        <ImageButton
+            android:id="@+id/keep_up"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_below="@+id/username"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="19dp"
+            android:layout_marginBottom="21dp"
+            android:layout_toStartOf="@+id/good_vibes"
+            android:layout_toEndOf="@+id/do_it"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/keepup" />
+
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

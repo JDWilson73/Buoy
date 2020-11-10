@@ -3,6 +3,7 @@ package edu.neu.madcourse.buoy;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
     private ArrayList<FriendItemCard> friendList;
     private ItemClickListener listener;
 
+
     public interface ItemClickListener {
         void onItemClick(int pos);
     }
@@ -24,13 +26,34 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
     public static class StickerViewHolder extends RecyclerView.ViewHolder{
         public TextView friendName;
         public TextView userName;
+        public ImageButton keepUp;
+        public ImageButton goodVibes;
+        public ImageButton doIt;
+        public TextView text;
 
         public StickerViewHolder(@NonNull View itemView, final ItemClickListener listener) {
             super(itemView);
             friendName = itemView.findViewById(R.id.full_name);
             userName = itemView.findViewById(R.id.username);
+            keepUp = itemView.findViewById(R.id.keep_up);
+            goodVibes = itemView.findViewById(R.id.good_vibes);
+            doIt = itemView.findViewById(R.id.do_it);
+
+            text = itemView.findViewById(R.id.textView);
 
             itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getLayoutPosition();
+                        if(position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+
+            keepUp.setOnClickListener(new View.OnClickListener(){
 
                 @Override
                 public void onClick(View v) {
@@ -42,6 +65,33 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
                     }
                 }
             });
+
+            goodVibes.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getLayoutPosition();
+                        if(position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+
+            doIt.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getLayoutPosition();
+                        if(position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+
         }
     }
 
