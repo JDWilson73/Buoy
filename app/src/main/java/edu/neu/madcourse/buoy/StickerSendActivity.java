@@ -55,6 +55,29 @@ public class StickerSendActivity extends AppCompatActivity {
             }
         });
         getUsers();
+        final TextView text = findViewById(R.id.textView);
+
+        stickerAdapter.setOnItemClickListener(new StickerAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(int pos) {
+                //something happens when item card is clicked
+            }
+
+            @Override
+            public void onVibesClick(int pos) {
+                text.setText("Good Vibes!");
+            }
+
+            @Override
+            public void onKeepClick(int pos) {
+                text.setText("Keep it Up!");
+            }
+
+            @Override
+            public void onDoItClick(int pos) {
+                text.setText("You can Do it!");
+            }
+        });
 
         //consider on swipe to delete
 
@@ -69,18 +92,6 @@ public class StickerSendActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(rLayoutManager);
     }
 
-//    @Override
-//    public void onClick(View view){
-//        switch (view.getId()){
-//            case R.id.do_it:
-//                break;
-//            case R.id.good_vibes:
-//                break;
-//            case R.id.keep_it_up:
-//                break;
-//
-//        }
-//    }
 
     public void getUsers(){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users");

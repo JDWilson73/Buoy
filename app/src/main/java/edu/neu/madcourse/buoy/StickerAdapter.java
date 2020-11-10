@@ -19,6 +19,9 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
 
     public interface ItemClickListener {
         void onItemClick(int pos);
+        void onVibesClick(int pos);
+        void onKeepClick(int pos);
+        void onDoItClick(int pos);
     }
 
     public void setOnItemClickListener(ItemClickListener listener) {this.listener = listener;}
@@ -29,7 +32,6 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
         public ImageButton keepUp;
         public ImageButton goodVibes;
         public ImageButton doIt;
-        public TextView text;
 
         public StickerViewHolder(@NonNull View itemView, final ItemClickListener listener) {
             super(itemView);
@@ -38,8 +40,6 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
             keepUp = itemView.findViewById(R.id.keep_up);
             goodVibes = itemView.findViewById(R.id.good_vibes);
             doIt = itemView.findViewById(R.id.do_it);
-
-            text = itemView.findViewById(R.id.textView);
 
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -60,7 +60,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
                     if(listener != null){
                         int position = getLayoutPosition();
                         if(position != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(position);
+                            listener.onKeepClick(position);
                         }
                     }
                 }
@@ -73,7 +73,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
                     if(listener != null){
                         int position = getLayoutPosition();
                         if(position != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(position);
+                            listener.onVibesClick(position);
                         }
                     }
                 }
@@ -86,7 +86,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
                     if(listener != null){
                         int position = getLayoutPosition();
                         if(position != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(position);
+                            listener.onDoItClick(position);
                         }
                     }
                 }
