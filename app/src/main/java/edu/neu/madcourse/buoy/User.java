@@ -9,8 +9,9 @@ public class User {
     String lastName;
     String email;
     String uid;
-    Map <String, Integer> stickerList;
+    Map <String, Integer> stickerList; //key: string name for sticker, value: #times received for each sticker
     int totalStickers;
+    //String test;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -24,8 +25,15 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.stickerList = new HashMap<>();
+        //initialize sticker map with sticker names/values
+        stickerList.put("doIt", 0);
+        stickerList.put("keepUp", 0);
+        stickerList.put("goodVibes", 0);
         this.totalStickers = 0;
-        this.email = email;
+        this.email = email; //this is token. bc its broken.
+        //this.test = test;
+
+
     }
     public String getEmail() {
         return email;
@@ -74,6 +82,8 @@ public class User {
     public void setTotalStickers(int totalStickers) {
         this.totalStickers = totalStickers;
     }
+
+    //public void setToken(String test){this.test = test;}
 
 
 }
