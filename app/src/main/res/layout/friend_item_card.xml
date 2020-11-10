@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
     app:cardCornerRadius="5dp">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="226dp"
         android:layout_margin="5dp">
@@ -15,65 +16,84 @@
             android:id="@+id/full_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="47dp"
             android:text="FirstName LastName"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/good_vibes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/full_name"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="username" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="53dp"
+            android:layout_marginBottom="18dp"
+            android:text="username"
+            app:layout_constraintBottom_toTopOf="@+id/do_it"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/do_it"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_height="0dp"
             android:layout_below="@+id/username"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="19dp"
-            android:layout_marginBottom="21dp"
+            android:layout_marginBottom="16dp"
+            android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/good_vibes"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/username"
             app:srcCompat="@drawable/doit" />
 
         <ImageButton
             android:id="@+id/good_vibes"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_height="0dp"
             android:layout_below="@+id/username"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="19dp"
-            android:layout_marginBottom="21dp"
+            android:layout_marginBottom="16dp"
+            android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/keep_up"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/do_it"
+            app:layout_constraintTop_toBottomOf="@+id/full_name"
             app:srcCompat="@drawable/goodvibes" />
 
         <ImageButton
             android:id="@+id/keep_up"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_height="0dp"
             android:layout_below="@+id/username"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="19dp"
-            android:layout_marginTop="19dp"
-            android:layout_marginEnd="19dp"
-            android:layout_marginBottom="21dp"
             android:layout_toStartOf="@+id/good_vibes"
             android:layout_toEndOf="@+id/do_it"
+            android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="@+id/good_vibes"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/good_vibes"
+            app:layout_constraintTop_toTopOf="@+id/good_vibes"
             app:srcCompat="@drawable/keepup" />
 
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

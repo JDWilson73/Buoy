@@ -2,7 +2,6 @@ package edu.neu.madcourse.buoy;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.View;
 
 public class FriendItemCard implements Parcelable {
     private String userName;
@@ -61,18 +60,4 @@ public class FriendItemCard implements Parcelable {
         dest.writeString(lastName);
     }
 
-
-
-//    @Override
-//    public void onClick(View view){
-//        switch (view.getId()){
-//            case R.id.do_it:
-//                break;
-//            case R.id.good_vibes:
-//                break;
-//            case R.id.keep_it_up:
-//                break;
-//
-//        }
-//    }
 }

@@ -28,12 +28,14 @@ public class StickerSendActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private StickerAdapter stickerAdapter;
     private String thisUsername;
+    static final String FRIEND_CARD_LIST = "friendCardList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sticker_send);
+        setTitle("Friends");
 
         friendList = new ArrayList<>();
         createRecyclerView();
@@ -55,7 +57,6 @@ public class StickerSendActivity extends AppCompatActivity {
             }
         });
         getUsers();
-        final TextView text = findViewById(R.id.textView);
 
         stickerAdapter.setOnItemClickListener(new StickerAdapter.ItemClickListener() {
             @Override
@@ -65,22 +66,35 @@ public class StickerSendActivity extends AppCompatActivity {
 
             @Override
             public void onVibesClick(int pos) {
-                text.setText("Good Vibes!");
+                setTitle("Good Vibes!");
             }
 
             @Override
             public void onKeepClick(int pos) {
-                text.setText("Keep it Up!");
+                setTitle("Keep it Up!");
             }
 
             @Override
             public void onDoItClick(int pos) {
-                text.setText("You can Do it!");
+                setTitle("You can Do it!");
             }
         });
 
         //consider on swipe to delete
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelableArrayList(FRIEND_CARD_LIST, this.friendList);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        friendList = savedInstanceState.getParcelableArrayList(FRIEND_CARD_LIST);
+        createRecyclerView();
     }
 
     private void createRecyclerView(){
@@ -106,11 +120,8 @@ public class StickerSendActivity extends AppCompatActivity {
                         friendList.add(new FriendItemCard(user.userName, user.firstName, user.lastName, child.getKey()));
                     }
                 }
-
                 stickerAdapter.notifyDataSetChanged();
                 }
-
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
