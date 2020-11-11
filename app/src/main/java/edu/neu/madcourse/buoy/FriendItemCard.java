@@ -48,6 +48,10 @@ public class FriendItemCard implements Parcelable {
         return lastName;
     }
 
+    public String getUserID(){
+        return userID;
+    }
+
     @Override
     public int describeContents() {
         return 0;
