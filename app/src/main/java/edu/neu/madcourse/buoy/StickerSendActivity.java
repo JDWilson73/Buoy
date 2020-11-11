@@ -86,19 +86,19 @@ public class StickerSendActivity extends AppCompatActivity {
             @Override
             public void onVibesClick(int pos) {
                 setTitle("Good Vibes!");
-                sendSticker(pos);
+                //sendSticker(pos);
             }
 
             @Override
             public void onKeepClick(int pos) {
                 setTitle("Keep it Up!");
-                sendSticker(pos);
+               // sendSticker(pos);
             }
 
             @Override
             public void onDoItClick(int pos) {
                 setTitle("You can Do it!");
-                sendSticker(pos);
+               // sendSticker(pos);
             }
         });
 
@@ -220,7 +220,7 @@ public class StickerSendActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     Log.e("TAG", "run: " + resp);
-                    //Toast.makeText(StickerSendActivity.this,resp,Toast.LENGTH_LONG).show();
+                    Toast.makeText(StickerSendActivity.this,resp,Toast.LENGTH_LONG).show();
                 }
             });
 
