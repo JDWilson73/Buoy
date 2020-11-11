@@ -1,6 +1,7 @@
 package edu.neu.madcourse.buoy;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
@@ -45,6 +48,7 @@ public class StickerSendActivity extends AppCompatActivity {
     private String thisUsername;
     static final String FRIEND_CARD_LIST = "friendCardList";
     private String friendToken;
+    private String uid;//this user's id
 
     private String SERVER_KEY = "key=AAAAhIS5lRU:APA91bHS8Kx0LjSRHt-O7zX4KxDsYX2yMFf0daJn3Z6g_fIxM81-h9GDSxNt2WNB22fwOfQiM_27R02nzggKOFaOKpmjGJJnAKo7U-3hOzq1qQf7NdL6TQZGRWrD1IGSsJzQbolP3qNH";
     private String SENDER_ID = "569162437909";
@@ -60,9 +64,10 @@ public class StickerSendActivity extends AppCompatActivity {
         createRecyclerView();
 
         //friendsTesting = findViewById(R.id.textView3);
-        final String uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
-        mdataBase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
-        mdataBase.addValueEventListener(new ValueEventListener() {
+        uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
+        mdataBase = FirebaseDatabase.getInstance().getReference();
+
+        mdataBase.child("Users").child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
@@ -86,23 +91,27 @@ public class StickerSendActivity extends AppCompatActivity {
             @Override
             public void onVibesClick(int pos) {
                 setTitle("Good Vibes!");
-                //sendSticker(pos);
+                sendSticker(pos, "goodVibes");
             }
 
             @Override
             public void onKeepClick(int pos) {
                 setTitle("Keep it Up!");
-               // sendSticker(pos);
+                sendSticker(pos, "keepUp");
             }
 
             @Override
             public void onDoItClick(int pos) {
                 setTitle("You can Do it!");
-               // sendSticker(pos);
+                sendSticker(pos, "doIt");
             }
         });
 
         //consider on swipe to delete
+
+    }
+
+    public void subscribeStickerNotification(View view){
 
     }
 
@@ -153,11 +162,11 @@ public class StickerSendActivity extends AppCompatActivity {
     }
 
     //On send: update friends' sticker list and current users sticker sent count.
-    private void sendSticker(int pos){
+    private void sendSticker(int pos, final String stickerType){
         FriendItemCard friend = this.friendList.get(pos);
-        String id = friend.getUserID();
+        final String id = friend.getUserID();
         //get token of friend
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(id);
+        DatabaseReference ref = mdataBase.child("Users").child(id);
         ref.keepSynced(true);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -173,6 +182,8 @@ public class StickerSendActivity extends AppCompatActivity {
         Thread sendMessage = new Thread(new Runnable() {
             @Override
             public void run() {
+                writeSticker(stickerType, id);
+                updateStickerCount();
                 sendToDevice(friendToken);
             }
         });
@@ -226,12 +237,61 @@ public class StickerSendActivity extends AppCompatActivity {
 
         }catch (JSONException | IOException e){
             e.printStackTrace();
+            Log.e("TAG","sticker threw error",e);
         }
     }
 
     private String convertStreamToString(InputStream is) {
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next().replace(",", ",\n") : "";
+    }
+
+    private void writeSticker(final String stickerType, String friendId){
+        mdataBase.child("Users").child(friendId).runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                User friend = currentData.getValue(User.class);
+                if (friend == null){
+                    return Transaction.success(currentData);
+                }
+
+                Map<String, Integer> stickerList = friend.stickerList;
+
+                if (stickerList.containsKey(stickerType)){
+                    stickerList.put(stickerType, stickerList.get(stickerType) + 1); //increment sticker type count
+                }
+                currentData.setValue(friend);
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                Log.d("StickerActivity", "friend sticker count post activity:onComplete" + error);
+            }
+        });
+    }
+
+    private void updateStickerCount(){
+        mdataBase.child("Users").child(this.uid).runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                User currentUser = currentData.getValue(User.class);
+                if (currentUser==null){
+                    return Transaction.success(currentData);
+                }
+
+                currentUser.totalStickers = currentUser.totalStickers + 1; //increment sticker count by 1
+                currentData.setValue(currentUser);
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                Log.d("StickerActivity", "sticker count post activity:onComplete" + error);
+            }
+        });
     }
 
 }
