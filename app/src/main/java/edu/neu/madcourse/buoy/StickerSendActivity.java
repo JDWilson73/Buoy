@@ -22,7 +22,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -166,25 +169,35 @@ public class StickerSendActivity extends AppCompatActivity {
         FriendItemCard friend = this.friendList.get(pos);
         final String id = friend.getUserID();
         //get token of friend
-        DatabaseReference ref = mdataBase.child("Users").child(id);
+        final DatabaseReference ref = mdataBase.child("Users").child(id);
         ref.keepSynced(true);
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                friendToken = user.email;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
         Thread sendMessage = new Thread(new Runnable() {
             @Override
             public void run() {
-                writeSticker(stickerType, id);
-                updateStickerCount();
-                sendToDevice(friendToken);
+                //DataSnapshot temp = new DataSnapshot;
+                //String friendToken = ref.getDatabase().
+
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        User user = snapshot.getValue(User.class);
+                        friendToken = user.email;
+                        writeSticker(stickerType, id);
+                        updateStickerCount();
+                        Thread sendDeviceThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendToDevice(friendToken);
+                            }
+                        });
+                        sendDeviceThread.start();
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
             }
         });
 
@@ -222,7 +235,7 @@ public class StickerSendActivity extends AppCompatActivity {
             outputStream.write(payload.toString().getBytes());
             outputStream.close();
 
-            // Read FCM response.
+            // Read FCM response. ERROR IS HERE
             InputStream inputStream = conn.getInputStream();
             final String resp = convertStreamToString(inputStream);
 

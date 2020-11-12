@@ -26,6 +26,10 @@ public class HomeActivity extends AppCompatActivity {
     DatabaseReference mdataBase;
     String username;
     private DatabaseReference mDatabase;
+    TextView doItCount;
+    TextView keepUpCount;
+    TextView goodVibesCount;
+    TextView stickerCount;
 
 
     @Override
@@ -34,6 +38,12 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         btnLogout = findViewById(R.id.logout);
         btnStickerGoTo = findViewById(R.id.sendStickerButton);
+
+        doItCount = findViewById(R.id.do_it_counter);
+        keepUpCount = findViewById(R.id.keep_up_counter);
+        goodVibesCount = findViewById(R.id.good_vibes_counter);
+        stickerCount = findViewById(R.id.sent_counter);
+
         final TextView user_welcome = findViewById(R.id.textView2);
         final String uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
         mdataBase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
@@ -42,15 +52,17 @@ public class HomeActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 user_welcome.setText("Welcome, " + user.firstName + "!");
+                //update counters for stickers
+                doItCount.setText(String.valueOf(user.stickerList.get("doIt")));
+                keepUpCount.setText(String.valueOf(user.stickerList.get("keepUp")));
+                goodVibesCount.setText(String.valueOf(user.stickerList.get("goodVibes")));
+                stickerCount.setText("Number of Stickers Sent: " + String.valueOf(user.totalStickers));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
-
-
 
         btnStickerGoTo.setOnClickListener(new View.OnClickListener() {
             @Override
