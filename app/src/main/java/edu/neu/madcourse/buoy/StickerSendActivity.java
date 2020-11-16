@@ -191,7 +191,6 @@ public class StickerSendActivity extends AppCompatActivity {
                             }
                         });
                         sendDeviceThread.start();
-
                     }
 
                     @Override
