@@ -24,7 +24,7 @@ public class FirstSignInActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     TextView testing;
     Button mGetStartedButton;
-    String email, pwd, test,uid;
+    String email, pwd, token,uid;
     FirebaseAuth mFirebaseAuth;
     public EditText firstName, lastName, userName;
 
@@ -65,20 +65,23 @@ public class FirstSignInActivity extends AppCompatActivity {
                 else{
                     uid = mFirebaseAuth.getInstance().getCurrentUser().getUid().toString();
 
+                    //get token code
                     FirebaseMessaging.getInstance().getToken()
                             .addOnCompleteListener(new OnCompleteListener<String>() {
 
                                 @Override
                                 public void onComplete(@NonNull Task<String> task) {
                                     if (!task.isSuccessful()) {
+                                        //failed to get token log
                                         Log.w("Token", "Fetching FCM registration token failed", task.getException());
                                         return;
                                     }
-                                    test = task.getResult().toString();
-                                    writeNewUser(uid, userNameString, firstNameString, lastNameString, test);
+                                    token = task.getResult().toString();
+                                    //create new user object
+                                    writeNewUser(uid, userNameString, firstNameString, lastNameString, email, token);
                                     Intent goHome = new Intent(FirstSignInActivity.this, HomeActivity.class);
                                     goHome.putExtra(userNameString, "username");
-                                    Toast.makeText(FirstSignInActivity.this, test, Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(FirstSignInActivity.this, token, Toast.LENGTH_LONG).show();
                                     startActivity(goHome);
                                 }
                             });
@@ -89,9 +92,8 @@ public class FirstSignInActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
-    private void writeNewUser(String uid, String userName, String firstName, String lastName, String test) {
-        //EMAIL is token actually.
-        User user = new User(uid, userName, firstName, lastName, test);
+    private void writeNewUser(String uid, String userName, String firstName, String lastName, String email, String token) {
+        User user = new User(uid, userName, firstName, lastName, email, token);
         mDatabase.child("Users").child(uid).setValue(user);
     }
 

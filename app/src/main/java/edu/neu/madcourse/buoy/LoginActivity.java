@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intSignUp = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intSignUp);
-
             }
         });
         btnSignIn.setOnClickListener(new View.OnClickListener() {
