@@ -54,7 +54,6 @@ public class StickerSendActivity extends AppCompatActivity {
     private String uid;//this user's id
 
     private String SERVER_KEY = "key=AAAAhIS5lRU:APA91bHS8Kx0LjSRHt-O7zX4KxDsYX2yMFf0daJn3Z6g_fIxM81-h9GDSxNt2WNB22fwOfQiM_27R02nzggKOFaOKpmjGJJnAKo7U-3hOzq1qQf7NdL6TQZGRWrD1IGSsJzQbolP3qNH";
-    private String SENDER_ID = "569162437909";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +149,9 @@ public class StickerSendActivity extends AppCompatActivity {
 
                 for(DataSnapshot child: snapshot.getChildren()) {
                     User user = child.getValue(User.class);
-                    if(!user.getUserName().equals(thisUsername)) {
+                    String friendUID = child.getKey();
+                    assert friendUID != null;
+                    if(!friendUID.equals(uid)) {
                         friendList.add(new FriendItemCard(user.userName, user.firstName, user.lastName, child.getKey()));
                     }
                 }
@@ -181,13 +182,14 @@ public class StickerSendActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User user = snapshot.getValue(User.class);
-                        friendToken = user.email;
+                        friendToken = user.token;
+                        final String friendName = user.userName;
                         writeSticker(stickerType, id);
                         updateStickerCount();
                         Thread sendDeviceThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                sendToDevice(friendToken);
+                                sendToDevice(friendToken, friendName);
                             }
                         });
                         sendDeviceThread.start();
@@ -204,14 +206,14 @@ public class StickerSendActivity extends AppCompatActivity {
 
     }
 
-    private void sendToDevice(String friendToken){
+    private void sendToDevice(String friendToken, String friendUsername){
         JSONObject payload = new JSONObject();
         JSONObject notification = new JSONObject();
         JSONObject data = new JSONObject();
 
         try{
             notification.put("title", "Sticker");
-            notification.put("body", "Someone sent a sticker!");
+            notification.put("body",  friendUsername + " sent you a sticker!");
             notification.put("sound", "default");
             notification.put("badge", "1");
 

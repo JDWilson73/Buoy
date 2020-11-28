@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -35,9 +36,12 @@ public class StickerMessagingService extends FirebaseMessagingService {
      * @param token
      */
     private void sendRegistrationToServer(String token){
-        uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
-        mdataBase = FirebaseDatabase.getInstance().getReference();
-        mdataBase.child("Users").child("uid").child("email").setValue(token);
+        FirebaseUser user = mFirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
+            mdataBase = FirebaseDatabase.getInstance().getReference();
+            mdataBase.child("Users").child("uid").child("email").setValue(token);
+        }
     }
 
     @Override
