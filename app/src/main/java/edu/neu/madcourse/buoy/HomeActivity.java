@@ -22,6 +22,7 @@ import java.util.Objects;
 public class HomeActivity extends AppCompatActivity {
     Button btnLogout;
     Button btnStickerGoTo;
+    Button btnUserSettings;
     FirebaseAuth mFirebaseAuth;
     DatabaseReference mdataBase;
     String username;
@@ -38,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         btnLogout = findViewById(R.id.logout);
         btnStickerGoTo = findViewById(R.id.sendStickerButton);
+        btnUserSettings = findViewById(R.id.userSettings);
 
         doItCount = findViewById(R.id.do_it_counter);
         keepUpCount = findViewById(R.id.keep_up_counter);
@@ -81,6 +83,15 @@ public class HomeActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 Intent intoMain = new Intent(HomeActivity.this, MainActivity.class);
                 startActivity(intoMain);
+            }
+        });
+
+        btnUserSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent userSettingsGoTo = new Intent(HomeActivity.this,
+                        UserSettingsActivity.class);
+                startActivity(userSettingsGoTo);
             }
         });
 
