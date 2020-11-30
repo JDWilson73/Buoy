@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -76,8 +77,9 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (!task.isSuccessful()) {
+                                        FirebaseAuthException e = (FirebaseAuthException)task.getException();
                                         Toast.makeText(MainActivity.this,
-                                                "Account Creation Failed!",
+                                                "Account Creation Failed! " + e,
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
 //                                       writeNewUser(mFirebaseAuth.getInstance().getCurrentUser().getEmail(), "squidward", "tentacles");
