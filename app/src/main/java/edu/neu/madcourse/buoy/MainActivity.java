@@ -77,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (!task.isSuccessful()) {
-                                        FirebaseAuthException e = (FirebaseAuthException)task.getException();
+                                        String errorMessage = task.getException().getMessage();
                                         Toast.makeText(MainActivity.this,
-                                                "Account Creation Failed! " + e,
+                                                "Account Creation Failed! " + errorMessage,
                                                 Toast.LENGTH_SHORT).show();
-                                        Log.e("Auth Acct Creation Failed Error", e.getMessage());
+                                        Log.e("Auth Acct Creation Failed Error", errorMessage);
                                     } else {
 //                                       writeNewUser(mFirebaseAuth.getInstance().getCurrentUser().getEmail(), "squidward", "tentacles");
                                         Intent get_data = new Intent(MainActivity.this,
