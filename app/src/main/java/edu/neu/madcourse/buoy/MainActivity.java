@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                                         Toast.makeText(MainActivity.this,
                                                 "Account Creation Failed! " + e,
                                                 Toast.LENGTH_SHORT).show();
+                                        Log.e("Auth Acct Creation Failed Error", e.getMessage());
                                     } else {
 //                                       writeNewUser(mFirebaseAuth.getInstance().getCurrentUser().getEmail(), "squidward", "tentacles");
                                         Intent get_data = new Intent(MainActivity.this,
