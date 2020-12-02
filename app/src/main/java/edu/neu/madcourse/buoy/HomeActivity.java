@@ -23,6 +23,7 @@ public class HomeActivity extends AppCompatActivity {
     Button btnLogout;
     Button btnStickerGoTo;
     Button btnUserSettings;
+    Button btnUserLists;
     FirebaseAuth mFirebaseAuth;
     DatabaseReference mdataBase;
     String username;
@@ -40,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.logout);
         btnStickerGoTo = findViewById(R.id.sendStickerButton);
         btnUserSettings = findViewById(R.id.userSettings);
+        btnUserLists = findViewById(R.id.home_goto_user_list);
 
         doItCount = findViewById(R.id.do_it_counter);
         keepUpCount = findViewById(R.id.keep_up_counter);
@@ -72,6 +74,13 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intoSticker = new Intent(HomeActivity.this,
                         StickerSendActivity.class);
                 startActivity(intoSticker);
+            }
+        });
+        btnUserLists.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(HomeActivity.this, userList.class);
+                startActivity(i);
             }
         });
 
