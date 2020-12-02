@@ -4,10 +4,13 @@ package edu.neu.madcourse.buoy;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 /**
@@ -23,6 +26,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     //Put in methods for when clicking the item card.
     public interface ItemClickListener {
         void onItemClick();
+        void onDeletePressed();
     }
 
     public void setOnItemClickListener(ItemClickListener listener) {
@@ -31,10 +35,24 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView header;
+        FloatingActionButton deleteButton;
+
 
         public ItemViewHolder(@NonNull View itemView, final ItemClickListener listener) {
             super(itemView);
             this.header = (TextView)itemView.findViewById(R.id.check_header);
+            this.deleteButton = (FloatingActionButton) itemView.findViewById(R.id.listDeleteButton);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null) {
+                        int position = getBindingAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION) {
+                            listener.onDeletePressed();
+                        }
+                    }
+                }
+            });
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
