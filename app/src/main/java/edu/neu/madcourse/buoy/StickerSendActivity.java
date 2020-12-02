@@ -39,8 +39,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import edu.neu.madcourse.buoy.listobjects.Task;
 
 public class StickerSendActivity extends AppCompatActivity {
     private DatabaseReference mdataBase;
@@ -148,11 +151,15 @@ public class StickerSendActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for(DataSnapshot child: snapshot.getChildren()) {
-                    User user = child.getValue(User.class);
+                    //User user = child.getValue(User.class);
                     String friendUID = child.getKey();
                     assert friendUID != null;
+                    String firstName = child.child("firstName").getValue().toString();
+                    String lastName = child.child("lastName").getValue().toString();
+                    String userName = child.child("userName").getValue().toString();
+                    List<Task> list = (List<Task>)child.child("taskLists").getValue();
                     if(!friendUID.equals(uid)) {
-                        friendList.add(new FriendItemCard(user.userName, user.firstName, user.lastName, child.getKey()));
+                        friendList.add(new FriendItemCard(userName, firstName, lastName, friendUID));
                     }
                 }
                 stickerAdapter.notifyDataSetChanged();

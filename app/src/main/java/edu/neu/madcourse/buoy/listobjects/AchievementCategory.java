@@ -36,6 +36,10 @@ public class AchievementCategory {
     String color;
     int tasksCompleted;
 
+    public AchievementCategory(){
+
+    }
+
     public AchievementCategory(String title, String color, ArrayList<String> subCategories){
         this.categoryTitle = title;
         this.color = color;
