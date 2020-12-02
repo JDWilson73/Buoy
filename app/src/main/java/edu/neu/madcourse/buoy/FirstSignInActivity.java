@@ -15,8 +15,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
@@ -30,6 +33,8 @@ public class FirstSignInActivity extends AppCompatActivity {
     String email, pwd, token,uid;
     FirebaseAuth mFirebaseAuth;
     public EditText firstName, lastName, userName;
+    DatabaseReference takenNames;
+    boolean isTaken = true;
 
 
     @Override
@@ -56,6 +61,9 @@ public class FirstSignInActivity extends AppCompatActivity {
                 final String firstNameString = firstName.getText().toString();
                 final String lastNameString = lastName.getText().toString();
                 final String userNameString = userName.getText().toString();
+                boolean notValidUsername = doesNameExist(userNameString);
+
+
                 if (firstNameString.isEmpty()){
                     firstName.setError("first name can't be empty");
                 }
@@ -64,6 +72,9 @@ public class FirstSignInActivity extends AppCompatActivity {
                 }
                 else if (userNameString.isEmpty()){
                     userName.setError("username can't be empty");
+                }
+                else if (notValidUsername){
+                    userName.setError("username is taken, please pick another name");
                 }
                 else{
                     uid = mFirebaseAuth.getInstance().getCurrentUser().getUid().toString();
@@ -98,6 +109,32 @@ public class FirstSignInActivity extends AppCompatActivity {
     private void writeNewUser(String uid, String userName, String firstName, String lastName, String email, String token) {
         User user = new User(uid, userName, firstName, lastName, email, token);
         mDatabase.child("Users").child(uid).setValue(user);
+        mDatabase.child("TakenUserNames").child(userName).setValue(true);
+    }
+    public boolean doesNameExist(final String sUsername)
+    {
+        takenNames = FirebaseDatabase.getInstance().getReference("TakenUserNames");
+        takenNames.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild(sUsername))
+                {
+                    isTaken = true;
+                }
+                else if (!dataSnapshot.hasChild(sUsername))
+                {
+                    isTaken = false;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(FirstSignInActivity.this, "Connection Error. Please try again in some time.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return isTaken;
     }
 
 }
