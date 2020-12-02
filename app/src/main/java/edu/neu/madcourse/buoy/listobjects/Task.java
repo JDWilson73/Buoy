@@ -5,6 +5,7 @@ Documentation:
 LocalDateTime
 https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html
  */
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
@@ -18,14 +19,22 @@ public class Task {
     AchievementCategory achievementCategory;
     String subCategory;
     boolean completed;
-    LocalDateTime dueDate;
+    String dueDate;
     ArrayList<Buoys> buoys;
     int likes;
+
+    public Task() {
+        this.taskTitle = "default";
+        this.completed = false;
+        this.buoys = new ArrayList<>();
+        this.likes = 0;
+        this.dueDate = LocalDateTime.now().plusDays(14).toString();
+    }
 
     public Task(String title, AchievementCategory achievementCategory, String subCategory, int year,
                 int month, int day, int hour, int min){
         this.taskTitle = title;
-        this.dueDate = LocalDateTime.of(year, month, day, hour, min);
+        this.dueDate = LocalDateTime.of(year, month, day, hour, min).toString();
         this.achievementCategory = achievementCategory;
         this.subCategory = subCategory;
         this.completed = false;
@@ -53,11 +62,11 @@ public class Task {
         this.completed = completed;
     }
 
-    public LocalDateTime getDueDate() {
+    public String getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDateTime dueDate) {
+    public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
     }
 

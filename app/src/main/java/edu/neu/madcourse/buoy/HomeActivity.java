@@ -51,7 +51,7 @@ public class HomeActivity extends AppCompatActivity {
         mdataBase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
         mdataBase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public synchronized void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 user_welcome.setText("Welcome, " + user.firstName + "!");
                 //update counters for stickers

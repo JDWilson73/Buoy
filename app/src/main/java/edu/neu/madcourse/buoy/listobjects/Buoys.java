@@ -7,13 +7,13 @@ import edu.neu.madcourse.buoy.User;
 public class Buoys {
     User friend;
     String comment;
-    LocalDateTime commentDate;
+    String commentDate;
 
     public Buoys(String comment, User user){
         this.friend = user;
         this.comment = comment;
         //should we set some character limit for a comment?
-        this.commentDate = LocalDateTime.now(); //set date to time commented.
+        this.commentDate = LocalDateTime.now().toString(); //set date to time commented.
     }
 
     public User getFriend() {
@@ -32,11 +32,11 @@ public class Buoys {
         this.comment = comment;
     }
 
-    public LocalDateTime getCommentDate() {
+    public String getCommentDate() {
         return commentDate;
     }
 
-    public void setCommentDate(LocalDateTime commentDate) {
+    public void String(String commentDate) {
         this.commentDate = commentDate;
     }
 }

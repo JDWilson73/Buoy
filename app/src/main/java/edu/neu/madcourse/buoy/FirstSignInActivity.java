@@ -19,6 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FirstSignInActivity extends AppCompatActivity {
     String TAG = "user info: ";
     private DatabaseReference mDatabase;

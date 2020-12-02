@@ -1,7 +1,12 @@
 package edu.neu.madcourse.buoy;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import edu.neu.madcourse.buoy.listobjects.Task;
+import edu.neu.madcourse.buoy.listobjects.TaskList;
 
 /**
  * Custom User class: to write attributes to database, please remember to write getters/setters for it.
@@ -15,6 +20,7 @@ public class User {
     Map <String, Integer> stickerList; //key: string name for sticker, value: #times received for each sticker
     int totalStickers;
     String token;
+    List<TaskList> taskLists;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -33,6 +39,17 @@ public class User {
         this.totalStickers = 0;
         this.email = email;
         this.token = token;
+
+        List<TaskList> taskLists = new ArrayList<>();
+        TaskList defaultList = new TaskList("testingList");
+
+        edu.neu.madcourse.buoy.listobjects.Task defaultTask = new edu.neu.madcourse.buoy.listobjects.Task("testing", null, null, 2020,
+                12, 1, 5, 12);
+
+        defaultList.addTask(defaultTask);
+        taskLists.add(defaultList);
+
+        this.taskLists = taskLists;
     }
     public String getEmail() {
         return email;
@@ -84,6 +101,9 @@ public class User {
         this.lastName = lastName;
     }
 
+    public List<TaskList> getTaskLists() { return taskLists; }
+
+    public void setTaskLists(List<TaskList> taskLists) { this.taskLists = taskLists; }
 
 
 
