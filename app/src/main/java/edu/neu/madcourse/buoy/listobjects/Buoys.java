@@ -9,6 +9,10 @@ public class Buoys {
     String comment;
     String commentDate;
 
+    public Buoys(){
+
+    }
+
     public Buoys(String comment, User user){
         this.friend = user;
         this.comment = comment;
