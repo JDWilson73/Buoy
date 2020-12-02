@@ -13,8 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ClipData;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,11 +42,15 @@ public class userList extends AppCompatActivity {
     private HashMap<ItemCard, InnerAdapter> innerAdapters; //list of inner lists mapped to item card as keys
 
     private RecyclerView recyclerView;
+    Button btnSubmit;
+    EditText newListInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
+        btnSubmit = findViewById(R.id.userListSubmit);
+        newListInput = findViewById(R.id.userListInput);
         mockList();
         createRecyclerView();
 
@@ -51,6 +60,23 @@ public class userList extends AppCompatActivity {
             this.parentAdapters.add(item);
         }
         setAdapters();
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = newListInput.getText().toString();
+                newList(name);
+                newListInput.setText("");
+
+                //close the keyboard
+                try {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                } catch (Exception e) {
+                    // fine nevermind then I didn't want you to have fun anyway
+                }
+
+            }
+        });
     }
 
     private void setAdapters(){
@@ -72,6 +98,18 @@ public class userList extends AppCompatActivity {
             });
         }
         populateInnerAdapterList();
+    }
+    public void newList(String name){
+        ArrayList<InnerItemCard> newList = new ArrayList<>();
+        itemCardArrayList.add(new ItemCard(name, newList));
+        int listnum = itemCardArrayList.size() -1;
+        ItemAdapter item = new ItemAdapter(this.itemCardArrayList.get(listnum));
+        this.parentAdapters.add(item);
+        concatAdapter.addAdapter(item);
+
+        for (ItemAdapter parent : parentAdapters){
+            parent.notifyDataSetChanged();
+        }
     }
 
     @Override
