@@ -46,6 +46,8 @@ public class userList extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     Button btnSubmit;
+    Button btnAddTodo;
+    EditText newTodoInput;
     EditText newListInput;
 
     @Override
@@ -53,6 +55,8 @@ public class userList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
         btnSubmit = findViewById(R.id.userListSubmit);
+        btnAddTodo = findViewById(R.id.checkBoxAdd);
+        newTodoInput = findViewById(R.id.checkBoxInput);
         newListInput = findViewById(R.id.userListInput);
         mockList();
         createRecyclerView();
@@ -120,6 +124,25 @@ public class userList extends AppCompatActivity {
 //                    }
                 }
 
+                @Override
+                public void onTodoAddPressed(String header, String todo) {
+                    ItemCard card = null;
+                    for (int i = 0; i<itemCardArrayList.size(); i ++){
+                        if (itemCardArrayList.get(i).getHeader().equals(header)){
+                            card = itemCardArrayList.get(i);
+                            break;
+                        }
+                    }
+                    if (card == null) {
+                        Toast.makeText(userList.this, "error making Todo", Toast.LENGTH_SHORT).show();
+                    } else {
+                       card.getHeaderList().add(new InnerItemCard(todo));
+
+
+                    }
+
+                }
+
             });
         }
         populateInnerAdapterList();
@@ -127,6 +150,7 @@ public class userList extends AppCompatActivity {
 
     public void newList(String name) {
         ArrayList<InnerItemCard> newList = new ArrayList<>();
+        newList.add(new InnerItemCard("Make my new List!"));
         ItemCard newCard = new ItemCard(name, newList);
         InnerAdapter newInner = new InnerAdapter(newList);
         itemCardArrayList.add(newCard);

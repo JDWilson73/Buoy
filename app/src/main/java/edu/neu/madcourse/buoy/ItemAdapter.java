@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public interface ItemClickListener {
         void onItemClick();
         void onDeletePressed();
+        void onTodoAddPressed(String header, String todo);
     }
 
     public void setOnItemClickListener(ItemClickListener listener) {
@@ -36,12 +38,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView header;
         FloatingActionButton deleteButton;
+        Button todoAdd;
+        EditText checkBoxInput;
 
 
         public ItemViewHolder(@NonNull View itemView, final ItemClickListener listener) {
             super(itemView);
             this.header = (TextView)itemView.findViewById(R.id.check_header);
+            this.checkBoxInput = (EditText)itemView.findViewById(R.id.checkBoxInput);
             this.deleteButton = (FloatingActionButton) itemView.findViewById(R.id.listDeleteButton);
+            this.todoAdd = (Button)itemView.findViewById(R.id.checkBoxAdd);
+
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -49,6 +56,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                         int position = getBindingAdapterPosition();
                         if(position != RecyclerView.NO_POSITION) {
                             listener.onDeletePressed();
+                        }
+                    }
+                }
+            });
+            todoAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null) {
+                        int position = getBindingAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            String todo = checkBoxInput.getText().toString();
+                            listener.onTodoAddPressed(header.getText().toString(), todo);
                         }
                     }
                 }
