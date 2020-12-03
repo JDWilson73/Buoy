@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,20 +106,17 @@ public class userList extends AppCompatActivity {
                     }
                     item.notifyDataSetChanged();
                 }
+
                 @Override
                 public void onDeletePressed() {
                     ItemCard card = itemCardArrayList.get(finalI);
-
-                    concatAdapter.removeAdapter(Objects.requireNonNull(innerAdapters.get(card)));
-                    concatAdapter.removeAdapter(Objects.requireNonNull(item));
-                    itemCardArrayList.remove(card);
                     parentAdapters.remove(item);
                     innerAdapters.remove(card);
+                    concatAdapter.removeAdapter(item);
+                    concatAdapterSet();
                     for (ItemAdapter parent : parentAdapters) {
                         parent.notifyDataSetChanged();
                     }
-
-
                 }
 
             });
@@ -129,8 +127,8 @@ public class userList extends AppCompatActivity {
     public void newList(String name) {
         ArrayList<InnerItemCard> newList = new ArrayList<>();
         itemCardArrayList.add(new ItemCard(name, newList));
-        int listnum = itemCardArrayList.size() - 1;
-        ItemAdapter item = new ItemAdapter(this.itemCardArrayList.get(listnum));
+//        int listnum = itemCardArrayList.size() - 1;
+//        ItemAdapter item = new ItemAdapter(this.itemCardArrayList.get(listnum));
         this.parentAdapters.add(item);
         concatAdapter.addAdapter(item);
 
