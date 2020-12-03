@@ -114,9 +114,10 @@ public class userList extends AppCompatActivity {
                     innerAdapters.remove(card);
                     concatAdapter.removeAdapter(item);
                     concatAdapterSet();
-                    for (ItemAdapter parent : parentAdapters) {
-                        parent.notifyDataSetChanged();
-                    }
+                    item.notifyDataSetChanged();
+//                    for (ItemAdapter parent : parentAdapters) {
+//                        parent.notifyDataSetChanged();
+//                    }
                 }
 
             });
@@ -126,15 +127,14 @@ public class userList extends AppCompatActivity {
 
     public void newList(String name) {
         ArrayList<InnerItemCard> newList = new ArrayList<>();
-        itemCardArrayList.add(new ItemCard(name, newList));
-//        int listnum = itemCardArrayList.size() - 1;
-//        ItemAdapter item = new ItemAdapter(this.itemCardArrayList.get(listnum));
+        ItemCard newCard = new ItemCard(name, newList);
+        InnerAdapter newInner = new InnerAdapter(newList);
+        itemCardArrayList.add(newCard);
+        int listnum = itemCardArrayList.size() - 1;
+        ItemAdapter item = new ItemAdapter(this.itemCardArrayList.get(listnum));
         this.parentAdapters.add(item);
-        concatAdapter.addAdapter(item);
-
-        for (ItemAdapter parent : parentAdapters) {
-            parent.notifyDataSetChanged();
-        }
+        this.innerAdapters.put(newCard, newInner);
+        setAdapters();
     }
 
     @Override
