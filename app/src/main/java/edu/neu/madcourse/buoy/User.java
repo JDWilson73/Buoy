@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import edu.neu.madcourse.buoy.ItemCard;
 
 import edu.neu.madcourse.buoy.listobjects.Task;
 import edu.neu.madcourse.buoy.listobjects.TaskList;
@@ -19,6 +20,7 @@ public class User {
     String firstName;
     String lastName;
     String email;
+    ArrayList<ItemCard> itemCardArrayList;
     String uid; //no setters/getters for this-database does this, likely shouldn't change.
     Map <String, Integer> stickerList; //key: string name for sticker, value: #times received for each sticker
     int totalStickers;
@@ -32,7 +34,21 @@ public class User {
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
+    public String getUid() {
+        return uid;
+    }
 
+    public void setItemCardArrayList(ArrayList<ItemCard> itemCardArrayList) {
+        this.itemCardArrayList = itemCardArrayList;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setStickerList(Map<String, Integer> stickerList) {
+        this.stickerList = stickerList;
+    }
     public User(String uid, String userName, String firstName, String lastName, String email, String token) {
         this.uid = uid;
         this.userName = userName;
@@ -46,6 +62,11 @@ public class User {
         this.totalStickers = 0;
         this.email = email;
         this.token = token;
+        this.itemCardArrayList = new ArrayList<>();
+        ArrayList<InnerItemCard> list1 = new ArrayList<>();
+        list1.add(new InnerItemCard("Make my first List"));
+
+        itemCardArrayList.add(new ItemCard("Welcome to Buoy!", list1));
 
         List<TaskList> taskLists = new ArrayList<>();
         TaskList defaultList = new TaskList("testingList");
@@ -61,7 +82,6 @@ public class User {
         this.friends = new ArrayList<>();
         this.friends.add("default");
     }
-
     public String getEmail() {
         return email;
     }
@@ -87,7 +107,6 @@ public class User {
     public void setSticker_list(Map<String, Integer> sticker_list) {
         this.stickerList = sticker_list;
     }
-
     public String getUserName() {
         return userName;
     }
@@ -113,6 +132,11 @@ public class User {
     }
 
     public List<TaskList> getTaskLists() { return taskLists; }
+
+    public ArrayList<ItemCard> getItemCardArrayList() {
+        return itemCardArrayList;
+    }
+
 
     public void setTaskLists(List<TaskList> taskLists) { this.taskLists = taskLists; }
 

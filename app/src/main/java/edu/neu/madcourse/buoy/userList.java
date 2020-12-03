@@ -24,8 +24,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -36,7 +44,7 @@ import edu.neu.madcourse.buoy.ItemCard;
 import edu.neu.madcourse.buoy.R;
 
 public class userList extends AppCompatActivity {
-    private ArrayList<ItemCard> itemCardArrayList; //item card list
+    private ArrayList<ItemCard> itemCardArrayList =new ArrayList<>(); //item card list
     static final String ITEMCARDLIST = "itemCardList";
     private ConcatAdapter concatAdapter; //main adapter merges all adapters together.
 
@@ -49,6 +57,12 @@ public class userList extends AppCompatActivity {
     Button btnAddTodo;
     EditText newTodoInput;
     EditText newListInput;
+    private String uid;//this user's id
+
+    private DatabaseReference mdataBase;
+    private FirebaseAuth mFirebaseAuth;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +72,23 @@ public class userList extends AppCompatActivity {
         btnAddTodo = findViewById(R.id.checkBoxAdd);
         newTodoInput = findViewById(R.id.checkBoxInput);
         newListInput = findViewById(R.id.userListInput);
-        mockList();
+        mdataBase = FirebaseDatabase.getInstance().getReference();
+        //mockList();
+        uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
+        mdataBase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+        mdataBase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                itemCardArrayList = user.getItemCardArrayList();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         createRecyclerView();
 
         this.parentAdapters = new ArrayList<>();
@@ -89,6 +119,9 @@ public class userList extends AppCompatActivity {
                 }
             }
         });
+        for (ItemAdapter parent : parentAdapters){
+            parent.notifyDataSetChanged();
+        }
     }
 
     private void setAdapters() {
@@ -99,7 +132,7 @@ public class userList extends AppCompatActivity {
 
             item.setOnItemClickListener(new ItemAdapter.ItemClickListener() {
                 @Override
-                public void onItemClick() {
+                public synchronized void onItemClick() {
                     ItemCard itemCard = itemCardArrayList.get(finalI);
                     if (itemCard.isExpanded()) { //if inner list is already expanded, tap should close list.
                         concatAdapter.removeAdapter(Objects.requireNonNull(innerAdapters.get(itemCard)));
@@ -112,20 +145,18 @@ public class userList extends AppCompatActivity {
                 }
 
                 @Override
-                public void onDeletePressed() {
+                public synchronized void onDeletePressed() {
                     ItemCard card = itemCardArrayList.get(finalI);
                     parentAdapters.remove(item);
                     innerAdapters.remove(card);
                     concatAdapter.removeAdapter(item);
                     concatAdapterSet();
+                    mdataBase.child("itemCardArrayList").setValue(itemCardArrayList);
                     item.notifyDataSetChanged();
-//                    for (ItemAdapter parent : parentAdapters) {
-//                        parent.notifyDataSetChanged();
-//                    }
                 }
 
                 @Override
-                public void onTodoAddPressed(String header, String todo) {
+                public synchronized void onTodoAddPressed(String header, String todo) {
                     ItemCard card = null;
                     for (int i = 0; i<itemCardArrayList.size(); i ++){
                         if (itemCardArrayList.get(i).getHeader().equals(header)){
@@ -137,6 +168,13 @@ public class userList extends AppCompatActivity {
                         Toast.makeText(userList.this, "error making Todo", Toast.LENGTH_SHORT).show();
                     } else {
                        card.getHeaderList().add(new InnerItemCard(todo));
+                       mdataBase.child("itemCardArrayList").setValue(itemCardArrayList);
+                        try {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        } catch (Exception e) {
+                            // fine nevermind then I didn't want you to have fun anyway
+                        }
 
 
                     }
@@ -158,6 +196,7 @@ public class userList extends AppCompatActivity {
         ItemAdapter item = new ItemAdapter(this.itemCardArrayList.get(listnum));
         this.parentAdapters.add(item);
         this.innerAdapters.put(newCard, newInner);
+        mdataBase.child("itemCardArrayList").setValue(itemCardArrayList);
         setAdapters();
     }
 
@@ -213,6 +252,7 @@ public class userList extends AppCompatActivity {
     }
 
     private void mockList() {
+
         this.itemCardArrayList = new ArrayList<>();
         //Mock out nested list of item cards to show
         ArrayList<InnerItemCard> list1 = new ArrayList<>();
@@ -230,8 +270,8 @@ public class userList extends AppCompatActivity {
         itemCardArrayList.add(new ItemCard("list1", list1));
         itemCardArrayList.add(new ItemCard("list2", list2));
         itemCardArrayList.add(new ItemCard("list3", list3));
-    }
 
+    }
     //concat needs to be sequential.
     private void concatAdapterSet() {
         for (Map.Entry<ItemCard, InnerAdapter> each : this.innerAdapters.entrySet()) {

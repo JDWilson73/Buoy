@@ -55,6 +55,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     if(listener != null) {
                         int position = getBindingAdapterPosition();
                         if(position != RecyclerView.NO_POSITION) {
+                            checkBoxInput.setText("");
                             listener.onDeletePressed();
                         }
                     }
@@ -68,6 +69,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                         if (position != RecyclerView.NO_POSITION){
                             String todo = checkBoxInput.getText().toString();
                             listener.onTodoAddPressed(header.getText().toString(), todo);
+                            listener.onItemClick();
+
                         }
                     }
                 }

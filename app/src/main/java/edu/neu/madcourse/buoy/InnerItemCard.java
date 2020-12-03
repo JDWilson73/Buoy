@@ -6,11 +6,14 @@ import android.os.Parcelable;
 public class InnerItemCard{
 
     private String header;
-    private int checked; //0 = false, 1 = true;
-
+    private boolean checked; //false = false, true = true;
+    public InnerItemCard(){
+        this.header = "";
+        this.checked = false;
+    }
     public InnerItemCard(String header){
         this.header = header;
-        this.checked = 0;
+        this.checked = false;
     }
 
     public String getHeader() {
@@ -18,16 +21,16 @@ public class InnerItemCard{
     }
 
     public void setChecked() {
-        if (this.checked == 0){
-            this.checked = 1;
+        if (this.checked == false){
+            this.checked = true;
         }
         else {
-            this.checked = 0;
+            this.checked = false;
         }
     }
 
     public boolean isChecked(){
-        return this.checked != 0;
+        return this.checked != false;
     }
 
 }
