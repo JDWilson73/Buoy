@@ -56,6 +56,8 @@ public class StickerSendActivity extends AppCompatActivity {
     private String friendToken;
     private String uid;//this user's id
 
+    private List<String> userFriends;
+
     private String SERVER_KEY = "key=AAAAhIS5lRU:APA91bHS8Kx0LjSRHt-O7zX4KxDsYX2yMFf0daJn3Z6g_fIxM81-h9GDSxNt2WNB22fwOfQiM_27R02nzggKOFaOKpmjGJJnAKo7U-3hOzq1qQf7NdL6TQZGRWrD1IGSsJzQbolP3qNH";
 
     @Override
@@ -78,6 +80,7 @@ public class StickerSendActivity extends AppCompatActivity {
                 User user = snapshot.getValue(User.class);
                 thisUsername = user.userName;
 
+                userFriends = (List<String>)snapshot.child("friends").getValue();
             }
 
             @Override
@@ -157,8 +160,9 @@ public class StickerSendActivity extends AppCompatActivity {
                     String firstName = child.child("firstName").getValue().toString();
                     String lastName = child.child("lastName").getValue().toString();
                     String userName = child.child("userName").getValue().toString();
-                    List<Task> list = (List<Task>)child.child("taskLists").getValue();
-                    if(!friendUID.equals(uid)) {
+                    //List<Task> friends = (List<Task>)child.child("friends").getValue();
+                    //if(!friendUID.equals(uid)) {
+                    if (userFriends.contains(userName)) {
                         friendList.add(new FriendItemCard(userName, firstName, lastName, friendUID));
                     }
                 }

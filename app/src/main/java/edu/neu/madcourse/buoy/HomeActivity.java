@@ -17,7 +17,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
 import java.util.Objects;
+
+import edu.neu.madcourse.buoy.listobjects.Task;
 
 public class HomeActivity extends AppCompatActivity {
     Button btnLogout;
@@ -33,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     TextView goodVibesCount;
     TextView stickerCount;
 
+    Button friendButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,8 @@ public class HomeActivity extends AppCompatActivity {
         btnStickerGoTo = findViewById(R.id.sendStickerButton);
         btnUserSettings = findViewById(R.id.userSettings);
         btnUserLists = findViewById(R.id.home_goto_user_list);
+
+        friendButton = findViewById(R.id.friendButton);
 
         doItCount = findViewById(R.id.do_it_counter);
         keepUpCount = findViewById(R.id.keep_up_counter);
@@ -104,5 +110,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        friendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent friendsGoTo = new Intent(HomeActivity.this,
+                        FriendActivity.class);
+                startActivity(friendsGoTo);
+            }
+        });
+        //addFriend("testswag5", "testswag6");
     }
 }

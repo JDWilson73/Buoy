@@ -1,9 +1,12 @@
 package edu.neu.madcourse.buoy;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.neu.madcourse.buoy.listobjects.Task;
 import edu.neu.madcourse.buoy.listobjects.TaskList;
@@ -21,6 +24,10 @@ public class User {
     int totalStickers;
     String token;
     List<TaskList> taskLists;
+
+    // Friends' usernames stored instead of the entire User reference. Hopefully will keep
+    // recursive BS from happening...
+    List<String> friends;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -50,7 +57,11 @@ public class User {
         taskLists.add(defaultList);
 
         this.taskLists = taskLists;
+
+        this.friends = new ArrayList<>();
+        this.friends.add("default");
     }
+
     public String getEmail() {
         return email;
     }
@@ -105,11 +116,27 @@ public class User {
 
     public void setTaskLists(List<TaskList> taskLists) { this.taskLists = taskLists; }
 
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
+    }
+
+    public void addFriend(User other) {
+        this.friends.add(other.userName);
+        other.friends.add(this.userName);
+    }
+
+    public void removeFriend(User other) {
+        this.friends.remove(other.userName);
+        other.friends.remove(this.userName);
+    }
 
 
-
-
-
+    // TODO make sticker send show only friends rather than all users
+    // TODO add buttons to add/remove friend and text entry fields to input username of friend to remove
 }
 
 
