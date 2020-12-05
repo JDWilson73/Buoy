@@ -1,10 +1,11 @@
 package edu.neu.madcourse.buoy;
 
 import android.os.Bundle;
-import android.support.wearable.activity.WearableActivity;
 import android.widget.TextView;
 
-public class profile extends WearableActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class profile extends AppCompatActivity {
 
     private TextView mTextView;
 
@@ -16,6 +17,6 @@ public class profile extends WearableActivity {
         mTextView = (TextView) findViewById(R.id.text);
 
         // Enables Always-on
-        setAmbientEnabled();
+        //setAmbientEnabled();
     }
 }
