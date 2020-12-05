@@ -30,7 +30,7 @@ public class FirstSignInActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     TextView testing;
     Button mGetStartedButton;
-    String email, pwd, token,uid;
+    String email, pwd, token, uid;
     FirebaseAuth mFirebaseAuth;
     public EditText firstName, lastName, userName;
     DatabaseReference takenNames;
@@ -43,9 +43,9 @@ public class FirstSignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_first_sign_in);
         // get data from email/password sign up page
         Bundle extras = getIntent().getExtras();
-        if (extras != null){
-             email = extras.getString("email");
-             pwd = extras.getString("password");
+        if (extras != null) {
+            email = extras.getString("email");
+            pwd = extras.getString("password");
         }
         firstName = findViewById(R.id.editTextTextPersonFirstName);
         lastName = findViewById(R.id.editTextTextPersonLastName);
@@ -54,87 +54,67 @@ public class FirstSignInActivity extends AppCompatActivity {
         mGetStartedButton = findViewById(R.id.buttonGetStarted);
 
 
-
         mGetStartedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String firstNameString = firstName.getText().toString();
                 final String lastNameString = lastName.getText().toString();
                 final String userNameString = userName.getText().toString();
-                boolean notValidUsername = doesNameExist(userNameString);
 
+                takenNames = FirebaseDatabase.getInstance().getReference("TakenUserNames");
+                takenNames.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        isTaken = dataSnapshot.hasChild(userNameString);
 
-                if (firstNameString.isEmpty()){
-                    firstName.setError("first name can't be empty");
-                }
-                else if (lastNameString.isEmpty()){
-                    lastName.setError("last name can't be empty");
-                }
-                else if (userNameString.isEmpty()){
-                    userName.setError("username can't be empty");
-                }
-                else if (notValidUsername){
-                    userName.setError("username is taken, please pick another name");
-                }
-                else{
-                    uid = mFirebaseAuth.getInstance().getCurrentUser().getUid().toString();
+                        if (firstNameString.isEmpty()) {
+                            firstName.setError("first name can't be empty");
+                        } else if (lastNameString.isEmpty()) {
+                            lastName.setError("last name can't be empty");
+                        } else if (userNameString.isEmpty()) {
+                            userName.setError("username can't be empty");
+                        } else if (isTaken) {
+                            userName.setError("username is taken, please pick another name");
+                        } else {
+                            uid = mFirebaseAuth.getInstance().getCurrentUser().getUid().toString();
 
-                    //get token code
-                    FirebaseMessaging.getInstance().getToken()
-                            .addOnCompleteListener(new OnCompleteListener<String>() {
+                            //get token code
+                            FirebaseMessaging.getInstance().getToken()
+                                    .addOnCompleteListener(new OnCompleteListener<String>() {
 
-                                @Override
-                                public void onComplete(@NonNull Task<String> task) {
-                                    if (!task.isSuccessful()) {
-                                        //failed to get token log
-                                        Log.w("Token", "Fetching FCM registration token failed", task.getException());
-                                        return;
-                                    }
-                                    token = task.getResult().toString();
-                                    //create new user object
-                                    writeNewUser(uid, userNameString, firstNameString, lastNameString, email, token);
-                                    Intent goHome = new Intent(FirstSignInActivity.this, HomeActivity.class);
-                                    goHome.putExtra(userNameString, "username");
-                                    //Toast.makeText(FirstSignInActivity.this, token, Toast.LENGTH_LONG).show();
-                                    startActivity(goHome);
-                                }
-                            });
-
-                }
+                                        @Override
+                                        public void onComplete(@NonNull Task<String> task) {
+                                            if (!task.isSuccessful()) {
+                                                //failed to get token log
+                                                Log.w("Token", "Fetching FCM registration token failed", task.getException());
+                                                return;
+                                            }
+                                            token = task.getResult().toString();
+                                            //create new user object
+                                            writeNewUser(uid, userNameString, firstNameString, lastNameString, email, token);
+                                            Intent goHome = new Intent(FirstSignInActivity.this, HomeActivity.class);
+                                            goHome.putExtra(userNameString, "username");
+                                            //Toast.makeText(FirstSignInActivity.this, token, Toast.LENGTH_LONG).show();
+                                            startActivity(goHome);
+                                        }
+                                    });
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(FirstSignInActivity.this, "Connection Error. Please try again in some time.", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
     }
+
+
     private void writeNewUser(String uid, String userName, String firstName, String lastName, String email, String token) {
         User user = new User(uid, userName, firstName, lastName, email, token);
         mDatabase.child("Users").child(uid).setValue(user);
         mDatabase.child("TakenUserNames").child(userName).setValue(true);
-    }
-    public boolean doesNameExist(final String sUsername)
-    {
-        takenNames = FirebaseDatabase.getInstance().getReference("TakenUserNames");
-        takenNames.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild(sUsername))
-                {
-                    isTaken = true;
-                }
-                else if (!dataSnapshot.hasChild(sUsername))
-                {
-                    isTaken = false;
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(FirstSignInActivity.this, "Connection Error. Please try again in some time.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        return isTaken;
     }
 
 }
