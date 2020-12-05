@@ -8,16 +8,18 @@ public class TaskList {
 
     String listTitle;
     List<Task> taskList;
+    boolean isFinished;
 
     public TaskList() {
         this.listTitle = "default";
         this.taskList = new ArrayList<>();
+        this.isFinished = false;
     }
 
     public TaskList(String listTitle) {
         this.listTitle = listTitle;
-
         this.taskList = new ArrayList<>();
+        this.isFinished = false;
     }
 
     public void addTask(Task task) {
@@ -38,5 +40,13 @@ public class TaskList {
 
     public void setTaskList(List<Task> taskList) {
         this.taskList = taskList;
+    }
+
+    public boolean isFinished(){ return isFinished; }
+
+    public void setFinished(boolean finished) {
+        if (this.isFinished != finished) {
+            this.isFinished = finished;
+        }
     }
 }

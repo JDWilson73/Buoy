@@ -1,6 +1,7 @@
 package edu.neu.madcourse.buoy;
 
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,16 +17,17 @@ import edu.neu.madcourse.buoy.listobjects.TaskList;
  * Custom User class: to write attributes to database, please remember to write getters/setters for it.
  */
 public class User {
+    static final String PLACEHOLDERITEMCARD = "itemCard placeHolder";
     String userName;
     String firstName;
     String lastName;
     String email;
-    ArrayList<ItemCard> itemCardArrayList;
+    //ArrayList<ItemCard> itemCardArrayList; //*
     String uid; //no setters/getters for this-database does this, likely shouldn't change.
     Map <String, Integer> stickerList; //key: string name for sticker, value: #times received for each sticker
     int totalStickers;
     String token;
-    List<TaskList> taskLists;
+    List<TaskList> taskLists; //*
 
     // Friends' usernames stored instead of the entire User reference. Hopefully will keep
     // recursive BS from happening...
@@ -34,21 +36,8 @@ public class User {
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
-    public String getUid() {
-        return uid;
-    }
 
-    public void setItemCardArrayList(ArrayList<ItemCard> itemCardArrayList) {
-        this.itemCardArrayList = itemCardArrayList;
-    }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public void setStickerList(Map<String, Integer> stickerList) {
-        this.stickerList = stickerList;
-    }
     public User(String uid, String userName, String firstName, String lastName, String email, String token) {
         this.uid = uid;
         this.userName = userName;
@@ -62,26 +51,25 @@ public class User {
         this.totalStickers = 0;
         this.email = email;
         this.token = token;
-        this.itemCardArrayList = new ArrayList<>();
-        ArrayList<InnerItemCard> list1 = new ArrayList<>();
-        list1.add(new InnerItemCard("Make my first List"));
 
-        itemCardArrayList.add(new ItemCard("Welcome to Buoy!", list1));
-
+        //Placeholder TaskList so attribute doesn't disappear from firebase.
         List<TaskList> taskLists = new ArrayList<>();
-        TaskList defaultList = new TaskList("testingList");
-
-        edu.neu.madcourse.buoy.listobjects.Task defaultTask = new edu.neu.madcourse.buoy.listobjects.Task("testing", null, null, 2020,
-                12, 1, 5, 12);
-
-        defaultList.addTask(defaultTask);
+        TaskList defaultList = new TaskList(PLACEHOLDERITEMCARD);
         taskLists.add(defaultList);
-
         this.taskLists = taskLists;
 
         this.friends = new ArrayList<>();
         this.friends.add("default");
     }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -100,13 +88,7 @@ public class User {
         this.totalStickers = totalStickers;
     }
 
-    public Map<String, Integer> getStickerList() {
-        return stickerList;
-    }
 
-    public void setSticker_list(Map<String, Integer> sticker_list) {
-        this.stickerList = sticker_list;
-    }
     public String getUserName() {
         return userName;
     }
@@ -131,12 +113,15 @@ public class User {
         this.lastName = lastName;
     }
 
-    public List<TaskList> getTaskLists() { return taskLists; }
-
-    public ArrayList<ItemCard> getItemCardArrayList() {
-        return itemCardArrayList;
+    public Map<String, Integer> getStickerList() {
+        return stickerList;
     }
 
+    public void setStickerList(Map<String, Integer> stickerList) {
+        this.stickerList = stickerList;
+    }
+
+    public List<TaskList> getTaskLists() { return taskLists; }
 
     public void setTaskLists(List<TaskList> taskLists) { this.taskLists = taskLists; }
 

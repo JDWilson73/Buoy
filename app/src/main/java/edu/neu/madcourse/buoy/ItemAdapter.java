@@ -69,7 +69,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                         if (position != RecyclerView.NO_POSITION){
                             String todo = checkBoxInput.getText().toString();
                             listener.onTodoAddPressed(header.getText().toString(), todo);
-                            listener.onItemClick();
+                            //listener.onItemClick();
 
                         }
                     }
