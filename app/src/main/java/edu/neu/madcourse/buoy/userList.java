@@ -52,7 +52,8 @@ import edu.neu.madcourse.buoy.R;
 import edu.neu.madcourse.buoy.listobjects.Task;
 import edu.neu.madcourse.buoy.listobjects.TaskList;
 import edu.neu.madcourse.buoy.newtask.AddTaskDialogFragment;
-
+// TODO: If we add achievements, add category spinners to dialog box.
+// TODO: Be able to delete task, see task's buoy's.
 public class userList extends AppCompatActivity implements AddTaskDialogFragment.AddTaskDialogListener {
     static final String PLACEHOLDERITEMCARD = "itemCard placeHolder";
 
@@ -172,7 +173,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     concatAdapter.removeAdapter(item);
                     itemCardArrayList.remove(card);
                     concatAdapterSet();
-                    //item.notifyDataSetChanged();
+
                     userTaskList.remove(finalI);
                     if (userTaskList.size() == 0) {
                         TaskList defaultList = new TaskList(PLACEHOLDERITEMCARD);
@@ -182,41 +183,9 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                 }
 
                 @Override
-                public synchronized void onTodoAddPressed(String todo) {
+                public synchronized void onTodoAddPressed() {
                     ItemCard card = itemCardArrayList.get(finalI);
                     launchNewTaskDialogBox(item, finalI, card);
-
-//                    if (todo.isEmpty() || todo == null) {
-//                        Toast.makeText(userList.this, "task cannot be empty.", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        LocalDateTime thisDate = LocalDateTime.now();
-//                        InnerItemCard newToDo = new InnerItemCard(todo, thisDate.format(formatter));
-//                        ItemCard card = itemCardArrayList.get(finalI);
-//
-//                        Task cardTask = new Task(todo, null, null,
-//                                thisDate.getYear(), thisDate.getMonthValue(),
-//                                thisDate.getDayOfMonth(), thisDate.getHour(), thisDate.getMinute());
-//
-//                        // TODO: Make a dialog box to add due date to task default date for now.
-//                        // TODO: If we add achievements, add category spinners to dialog box.
-//
-//                        if (card == null || cardTask == null) {
-//                            Toast.makeText(userList.this, "error making Todo", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            userTaskList.get(finalI).getTaskList().add(cardTask); //add new task to user task list
-//                            InnerAdapter innerListAdapter = innerAdapters.get(card);
-//                            card.addToHeaderList(newToDo);
-//                            innerListAdapter.notifyDataSetChanged();
-//                            item.notifyDataSetChanged();
-//                            mdataBase.child("taskLists").setValue(userTaskList); //write to DB
-//                            try {
-//                                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-//                                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-//                            } catch (Exception e) {
-//                                // fine nevermind then I didn't want you to have fun anyway
-//                            }
-//                        }
-//                    }
                 }
 
             });
@@ -228,19 +197,28 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         //putting new TaskList into DB
         TaskList newTaskList = new TaskList(name);
         this.userTaskList.add(newTaskList);
-        mdataBase.child("taskLists").setValue(userTaskList);
+        mdataBase.child("taskLists").setValue(userTaskList).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //populating recyclerview with new list
+                ArrayList<InnerItemCard> newList = new ArrayList<>(); //new inner arraylist
+                ItemCard newCard = new ItemCard(name, newList);
+                itemCardArrayList.add(newCard);
 
-        //populating recyclerview with new list
-        ArrayList<InnerItemCard> newList = new ArrayList<>(); //new inner arraylist
-        ItemCard newCard = new ItemCard(name, newList);
-        itemCardArrayList.add(newCard);
+                ItemAdapter item = new ItemAdapter(newCard);
+                parentAdapters.add(item);
 
-        //InnerAdapter newInner = new InnerAdapter(newList);
-        ItemAdapter item = new ItemAdapter(newCard);
-        this.parentAdapters.add(item);
-        //this.innerAdapters.put(newCard, newInner);
-
-        setAdapters();
+                setAdapters();
+                Toast.makeText(userList.this, "New List added Successfully!", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                userTaskList.remove(newTaskList);
+                Log.e("New List Creation Failure", e.getMessage());
+                Toast.makeText(userList.this, "Failed to Add new List", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -252,16 +230,6 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-//        itemCardArrayList = savedInstanceState.getParcelableArrayList(ITEMCARDLIST);
-//        //parentAdapters = (ArrayList<ItemAdapter>) savedInstanceState.getSerializable(PARENTADAPTERLIST);
-////        createRecyclerView();
-////        parentAdapters = new ArrayList<>();
-////        //set itemCardArrayList into parent Adapters list
-////        for (int i = 0; i < itemCardArrayList.size(); i++) {
-////            ItemAdapter item = new ItemAdapter(itemCardArrayList.get(i));
-////            parentAdapters.add(item);
-////        }
-////        setAdapters();
     }
 
     private void createRecyclerView() {
@@ -358,7 +326,6 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
     }
 
 
-    // TODO: If we add achievements, add category spinners to dialog box.
     @Override
     public void onPositiveClick(AddTaskDialogFragment dialog) {
         String todo = dialog.getToDo();
@@ -389,6 +356,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                             card.addToHeaderList(newToDo);
                             innerListAdapter.notifyDataSetChanged();
                             item.notifyDataSetChanged();
+                            Toast.makeText(userList.this, "Task added Successfully!", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

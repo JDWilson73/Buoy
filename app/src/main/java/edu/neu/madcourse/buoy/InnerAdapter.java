@@ -73,6 +73,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerViewHol
     public void onBindViewHolder(@NonNull InnerViewHolder holder, int position) {
         InnerItemCard current = innerListItems.get(position);
         holder.checkItem.setText(current.getHeader());
+        holder.text.setText(current.getDate());
         holder.checkItem.setChecked(current.isChecked());
     }
 

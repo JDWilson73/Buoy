@@ -56,7 +56,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public interface ItemClickListener {
         void onItemClick();
         void onDeletePressed();
-        void onTodoAddPressed(String todo);
+        void onTodoAddPressed();
     }
 
     public void setOnItemClickListener(ItemClickListener listener) {
@@ -67,13 +67,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         TextView header;
         FloatingActionButton deleteButton;
         Button todoAdd;
-        EditText checkBoxInput;
+        //EditText checkBoxInput;
 
 
         public ItemViewHolder(@NonNull View itemView, final ItemClickListener listener) {
             super(itemView);
             this.header = (TextView)itemView.findViewById(R.id.check_header);
-            this.checkBoxInput = (EditText)itemView.findViewById(R.id.checkBoxInput);
+            //this.checkBoxInput = (EditText)itemView.findViewById(R.id.checkBoxInput);
             this.deleteButton = (FloatingActionButton) itemView.findViewById(R.id.listDeleteButton);
             this.todoAdd = (Button)itemView.findViewById(R.id.checkBoxAdd);
 
@@ -83,7 +83,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     if(listener != null) {
                         int position = getBindingAdapterPosition();
                         if(position != RecyclerView.NO_POSITION) {
-                            checkBoxInput.setText("");
+                            //checkBoxInput.setText("");
                             listener.onDeletePressed();
                         }
                     }
@@ -95,8 +95,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     if(listener != null) {
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
-                            String todo = checkBoxInput.getText().toString();
-                            listener.onTodoAddPressed(todo);
+                            //String todo = checkBoxInput.getText().toString();
+                            listener.onTodoAddPressed();
                             //listener.onItemClick();
 
                         }
