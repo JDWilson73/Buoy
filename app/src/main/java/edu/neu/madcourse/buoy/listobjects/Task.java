@@ -8,6 +8,7 @@ https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +23,7 @@ public class Task {
     String dueDate;
     ArrayList<Buoys> buoys;
     int likes;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy hh:mm a");
 
     public Task() {
         this.taskTitle = "default";
@@ -34,7 +36,8 @@ public class Task {
     public Task(String title, AchievementCategory achievementCategory, String subCategory, int year,
                 int month, int day, int hour, int min){
         this.taskTitle = title;
-        this.dueDate = LocalDateTime.of(year, month, day, hour, min).toString();
+        LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, min);
+        this.dueDate = dateTime.format(formatter);
         this.achievementCategory = achievementCategory;
         this.subCategory = subCategory;
         this.completed = false;

@@ -1,6 +1,8 @@
 package edu.neu.madcourse.buoy;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +21,42 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * For nested view to work, every individual parent item needs to have its own adapter--meaning
  * in main activity, use a loop to make a new adapter for each item.
  */
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> implements Parcelable {
     //private ArrayList<ItemCard> listItems;
     ItemCard listItems;
     private ItemClickListener listener;
+
+    protected ItemAdapter(Parcel in) {
+        listItems = in.readParcelable(ItemCard.class.getClassLoader());
+    }
+
+    public static final Creator<ItemAdapter> CREATOR = new Creator<ItemAdapter>() {
+        @Override
+        public ItemAdapter createFromParcel(Parcel in) {
+            return new ItemAdapter(in);
+        }
+
+        @Override
+        public ItemAdapter[] newArray(int size) {
+            return new ItemAdapter[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(listItems, flags);
+    }
 
     //Put in methods for when clicking the item card.
     public interface ItemClickListener {
         void onItemClick();
         void onDeletePressed();
-        void onTodoAddPressed(String header, String todo);
+        void onTodoAddPressed(String todo);
     }
 
     public void setOnItemClickListener(ItemClickListener listener) {
@@ -68,7 +96,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
                             String todo = checkBoxInput.getText().toString();
-                            listener.onTodoAddPressed(header.getText().toString(), todo);
+                            listener.onTodoAddPressed(todo);
                             //listener.onItemClick();
 
                         }

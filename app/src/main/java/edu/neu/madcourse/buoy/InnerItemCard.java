@@ -21,10 +21,10 @@ public class InnerItemCard implements Parcelable {
     }
 
     //Default constructor
-    public InnerItemCard(String header){
+    public InnerItemCard(String header, String dateTime){
         this.header = header;
         this.checked = false;
-        this.date = LocalDateTime.now().toString();
+        this.date = dateTime;
     }
 
     //Constructor that turns a Task Object to Inner Item Card Object.
