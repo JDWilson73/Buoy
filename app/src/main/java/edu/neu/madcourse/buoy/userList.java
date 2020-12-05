@@ -80,7 +80,6 @@ public class userList extends AppCompatActivity {
 
         createRecyclerView();
 
-
         mdataBase = FirebaseDatabase.getInstance().getReference();
         uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
         mdataBase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
@@ -171,7 +170,6 @@ public class userList extends AppCompatActivity {
                         TaskList defaultList = new TaskList(PLACEHOLDERITEMCARD);
                         userTaskList.add(defaultList);
                     }
-                    //mdataBase.child("itemCardArrayList").setValue(itemCardArrayList);
                     mdataBase.child("taskLists").setValue(userTaskList);
                 }
 
@@ -271,6 +269,8 @@ public class userList extends AppCompatActivity {
     private void populateInnerAdapterList() {
         this.innerAdapters = new HashMap<>();
         for (int i = 0; i < this.itemCardArrayList.size(); i++) {
+            TaskList taskList = this.userTaskList.get(i);
+            List<Task> tasks = taskList.getTaskList();
             ArrayList<InnerItemCard> list = this.itemCardArrayList.get(i).getHeaderList();
             InnerAdapter adapter = new InnerAdapter(list);
             this.innerAdapters.put(this.itemCardArrayList.get(i), adapter);
@@ -283,6 +283,8 @@ public class userList extends AppCompatActivity {
                 @Override
                 public void onCheckClick(int pos) {
                     list.get(pos).setChecked();
+                    tasks.get(pos).setCompleted(!tasks.get(pos).isCompleted());
+                    mdataBase.child("taskLists").setValue(userTaskList);
                     adapter.notifyDataSetChanged();
                 }
             });
