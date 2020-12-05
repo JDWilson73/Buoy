@@ -18,7 +18,7 @@
 
 
         <activity
-            android:name=".profile"
+            android:name=".Profile"
             android:label="@string/title_activity_profile"></activity>
         <activity android:name=".FriendActivity" />
         <activity android:name=".UserSettingsUpdateActivity" />

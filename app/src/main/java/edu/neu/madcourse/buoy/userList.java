@@ -53,7 +53,7 @@ import edu.neu.madcourse.buoy.listobjects.Task;
 import edu.neu.madcourse.buoy.listobjects.TaskList;
 import edu.neu.madcourse.buoy.newtask.AddTaskDialogFragment;
 // TODO: If we add achievements, add category spinners to dialog box.
-// TODO: Be able to delete task, see task's buoy's.
+// TODO: Be able to delete task, see task's buoy's, complete a list button --> new activity or fragment to get location etc..
 public class userList extends AppCompatActivity implements AddTaskDialogFragment.AddTaskDialogListener {
     static final String PLACEHOLDERITEMCARD = "itemCard placeHolder";
 
