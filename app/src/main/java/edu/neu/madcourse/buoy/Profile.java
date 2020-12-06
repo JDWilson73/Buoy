@@ -54,4 +54,5 @@ public class Profile extends AppCompatActivity {
     }
 
     //TODO: Display User's first/last name, username, top x number of tasks due soon.
+    //TODO: When adding achievement badges, display those in horizontal scrolling recycler view as well.
 }

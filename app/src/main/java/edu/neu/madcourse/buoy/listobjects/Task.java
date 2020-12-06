@@ -30,7 +30,7 @@ public class Task {
         this.completed = false;
         this.buoys = new ArrayList<>();
         this.likes = 0;
-        this.dueDate = LocalDateTime.now().plusDays(14).toString();
+        this.dueDate = LocalDateTime.now().plusDays(14).format(formatter);
     }
 
     public Task(String title, AchievementCategory achievementCategory, String subCategory, int year,
@@ -79,6 +79,7 @@ public class Task {
 
     public void addBuoy(Buoys buoy){
         this.buoys.add(buoy);
+        //this.buoys.sort(Comparable by date);
     }
 
     public void addLike(){

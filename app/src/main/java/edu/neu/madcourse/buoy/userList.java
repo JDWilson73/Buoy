@@ -326,6 +326,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
     }
 
 
+    //Positive Click Method for Dialog Box: creates new task object, writes to firebase and displays in app.
     @Override
     public void onPositiveClick(AddTaskDialogFragment dialog) {
         String todo = dialog.getToDo();
@@ -337,6 +338,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         String dateAndTime = date + " " + time;
 
         InnerItemCard newToDo = new InnerItemCard(todo, dateAndTime); //new inner card
+        //Parses string of date and time into LocalDateTime Object
         LocalDateTime thisDate = LocalDateTime.parse(dateAndTime, formatter);
         Task cardTask = new Task(todo, null, null,
                 thisDate.getYear(), thisDate.getMonthValue(),
@@ -348,6 +350,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
             Toast.makeText(userList.this, "Error making new task.", Toast.LENGTH_SHORT).show();
         } else {
             userTaskList.get(finalI).getTaskList().add(cardTask); //add new task to user task list
+            //listeners to make sure task is added successfully before adding to adapters.
             mdataBase.child("taskLists").setValue(userTaskList)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
