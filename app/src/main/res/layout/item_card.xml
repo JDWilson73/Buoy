@@ -39,19 +39,6 @@
             app:layout_constraintStart_toStartOf="@+id/checkBoxAdd"
             app:layout_constraintTop_toBottomOf="@+id/listDeleteButton" />
 
-        <EditText
-            android:id="@+id/checkBoxInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="100dp"
-            android:ems="10"
-            android:hint="item name"
-            android:inputType="textPersonName"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/checkBoxAdd"
-            app:layout_constraintEnd_toEndOf="@+id/checkBoxAdd"
-            app:layout_constraintTop_toTopOf="@+id/checkBoxAdd" />
-
         <Button
             android:id="@+id/checkBoxAdd"
             android:layout_width="68dp"
@@ -80,6 +67,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:rippleColor="#51FFFFFF"
             app:srcCompat="@android:drawable/ic_delete" />
+
+        <Button
+            android:id="@+id/complete_list_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete List"
+            app:layout_constraintBottom_toBottomOf="@+id/checkBoxAdd"
+            app:layout_constraintStart_toStartOf="@+id/check_header" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

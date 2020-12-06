@@ -3,9 +3,8 @@
     package="edu.neu.madcourse.buoy">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <uses-feature android:name="android.hardware.type.watch" />
-
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -21,6 +20,8 @@
             android:name=".Profile"
             android:label="@string/title_activity_profile"></activity>
         <activity android:name=".FriendActivity" />
+        <activity android:name=".completelist.CompleteListActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".UserSettingsUpdateActivity" />
         <activity android:name=".UserSettingsActivity" />
         <activity android:name=".FirstSignInActivity" />
@@ -49,6 +50,10 @@
                 <action android:name="com.google.firebase.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".userList"
+            android:foregroundServiceType="location" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

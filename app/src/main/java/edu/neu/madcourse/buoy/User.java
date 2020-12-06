@@ -27,7 +27,8 @@ public class User {
     Map <String, Integer> stickerList; //key: string name for sticker, value: #times received for each sticker
     int totalStickers;
     String token;
-    List<TaskList> taskLists; //*
+    List<TaskList> taskLists;
+    List<TaskList> completedLists;
 
     // Friends' usernames stored instead of the entire User reference. Hopefully will keep
     // recursive BS from happening...
@@ -57,6 +58,7 @@ public class User {
         TaskList defaultList = new TaskList(PLACEHOLDERITEMCARD);
         taskLists.add(defaultList);
         this.taskLists = taskLists;
+        this.completedLists = taskLists;
 
         this.friends = new ArrayList<>();
         this.friends.add("default");
@@ -143,6 +145,13 @@ public class User {
         other.friends.remove(this.userName);
     }
 
+    public List<TaskList> getCompletedLists() {
+        return completedLists;
+    }
+
+    public void setCompletedLists(List<TaskList> completedLists) {
+        this.completedLists = completedLists;
+    }
 
     // TODO make sticker send show only friends rather than all users
     // TODO add buttons to add/remove friend and text entry fields to input username of friend to remove

@@ -11,6 +11,8 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import edu.neu.madcourse.buoy.User;
+
 /**
  * This represents a task object. A task is part of list and has a category (badge purposes), title,
  * due date, completion status, and buoys associated with it.
@@ -43,6 +45,12 @@ public class Task {
         this.completed = false;
         this.buoys = new ArrayList<>();
         this.likes = 0;
+
+        Buoys testBuoy = new Buoys("You can Do it!",
+                new User("UID", "userName", "Test", "User", "email", "123"));
+        this.buoys.add(testBuoy);
+        this.buoys.add(testBuoy);
+        this.buoys.add(testBuoy);
     }
 
     public String getTaskTitle() {

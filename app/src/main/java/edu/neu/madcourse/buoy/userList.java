@@ -6,18 +6,28 @@ https://medium.com/swlh/expandable-list-in-android-with-mergeadapter-3a7f0cb5616
 https://medium.com/androiddevelopers/merge-adapters-sequentially-with-mergeadapter-294d2942127a
 https://developer.android.com/guide/topics/ui/controls/checkbox
 https://medium.com/techmacademy/how-to-read-and-write-booleans-in-a-parcelable-class-99e5948db58d
+https://stackoverflow.com/questions/22323974/how-to-get-city-name-by-latitude-longitude-in-android
  */
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -27,6 +37,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,11 +48,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,16 +64,19 @@ import edu.neu.madcourse.buoy.InnerItemCard;
 import edu.neu.madcourse.buoy.ItemAdapter;
 import edu.neu.madcourse.buoy.ItemCard;
 import edu.neu.madcourse.buoy.R;
+import edu.neu.madcourse.buoy.completelist.CompleteListActivity;
 import edu.neu.madcourse.buoy.listobjects.Task;
 import edu.neu.madcourse.buoy.listobjects.TaskList;
 import edu.neu.madcourse.buoy.newtask.AddTaskDialogFragment;
+
 // TODO: If we add achievements, add category spinners to dialog box.
 // TODO: Be able to delete task, see task's buoy's, complete a list button --> new activity or fragment to get location etc..
+// TODO: Add a view completed lists button at top, only show uncompleted lists in this activity.
 public class userList extends AppCompatActivity implements AddTaskDialogFragment.AddTaskDialogListener {
+    static final int REQUEST_CODE = 173;
     static final String PLACEHOLDERITEMCARD = "itemCard placeHolder";
 
     private ArrayList<ItemCard> itemCardArrayList = new ArrayList<>(); //item card list
-    static final String ITEMCARDLIST = "itemCardList";
     private ConcatAdapter concatAdapter; //main adapter merges all adapters together.
 
     private ArrayList<ItemAdapter> parentAdapters; //list of item card adapters
@@ -66,30 +84,28 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
 
     private RecyclerView recyclerView;
     private Button btnSubmit;
-    private Button btnAddTodo;
-    private EditText newTodoInput;
     private EditText newListInput;
     private String uid;//this user's id
 
     private DatabaseReference mdataBase;
     private FirebaseAuth mFirebaseAuth;
     private List<TaskList> userTaskList; //arrayList
+    static final String UID = "userID";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy hh:mm a");
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Your Lists");
         setContentView(R.layout.activity_user_list);
         btnSubmit = findViewById(R.id.userListSubmit);
-        btnAddTodo = findViewById(R.id.checkBoxAdd);
-        newTodoInput = findViewById(R.id.checkBoxInput);
         newListInput = findViewById(R.id.userListInput);
 
         createRecyclerView();
 
-        mdataBase = FirebaseDatabase.getInstance().getReference();
         uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
         mdataBase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
 
@@ -141,6 +157,8 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         });
     }
 
+
+
     /**
      * Sets Listeners for each Parent Adapter and Inner Adapter.
      */
@@ -188,6 +206,14 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     launchNewTaskDialogBox(item, finalI, card);
                 }
 
+                @Override
+                public void onCompletePressed() {
+                    Intent completeList = new Intent(userList.this, CompleteListActivity.class);
+                    completeList.putExtra("uid", uid);
+                    completeList.putExtra("taskListComplete", finalI);
+                    startActivityForResult(completeList, REQUEST_CODE);
+                }
+
             });
         }
         populateInnerAdapterList();
@@ -224,12 +250,43 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putParcelableArrayList(ITEMCARDLIST, this.itemCardArrayList);
+        savedInstanceState.putString(UID, this.uid);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        this.uid = savedInstanceState.getString(UID);
+        mdataBase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+    }
+
+    //Refreshes activity after going to complete list activity.
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        createRecyclerView();
+        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            mdataBase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
+                    userTaskList = user.getTaskLists();
+                    taskListTranslateToItemCardLists(); //translate user's task lists to item card lists
+                    parentAdapters = new ArrayList<>();
+                    //set itemCardArrayList into parent Adapters list
+                    for (int i = 0; i < itemCardArrayList.size(); i++) {
+                        ItemAdapter item = new ItemAdapter(itemCardArrayList.get(i));
+                        parentAdapters.add(item);
+                    }
+                    setAdapters();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("Reading from DB error", error.getMessage());
+                }
+            });
+        }
     }
 
     private void createRecyclerView() {
@@ -261,10 +318,49 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
 
                 @Override
                 public void onCheckClick(int pos) {
-                    list.get(pos).setChecked();
                     tasks.get(pos).setCompleted(!tasks.get(pos).isCompleted());
-                    mdataBase.child("taskLists").setValue(userTaskList);
-                    adapter.notifyDataSetChanged();
+                    mdataBase.child("taskLists").setValue(userTaskList)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    list.get(pos).setChecked();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    //if fail, reset task to opposite of what it is.
+                                    tasks.get(pos).setCompleted(!tasks.get(pos).isCompleted());
+                                    Toast.makeText(userList.this,
+                                            "Complete Task failed.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                }
+
+                @Override
+                public void onDeleteClick(int pos) {
+                    Task removedTask = tasks.get(pos);
+                    tasks.remove(pos);
+                    mdataBase.child("taskLists").setValue(userTaskList)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    list.remove(pos);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    //if fail, add task back in
+                                    tasks.add(removedTask);
+                                    Toast.makeText(userList.this,
+                                            "Complete Task failed.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
                 }
             });
         }
@@ -291,6 +387,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
      * a List of Task Objects which is translated into InnerItemCard Objects for each Item Card.
      */
     private void taskListTranslateToItemCardLists() {
+        itemCardArrayList = new ArrayList<>();
         for (int k = 0; k < this.userTaskList.size(); k++) {
             if (this.userTaskList.get(k).getListTitle().equals(PLACEHOLDERITEMCARD)) {
                 this.userTaskList.remove(k);
@@ -339,7 +436,11 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
 
         InnerItemCard newToDo = new InnerItemCard(todo, dateAndTime); //new inner card
         //Parses string of date and time into LocalDateTime Object
-        LocalDateTime thisDate = LocalDateTime.parse(dateAndTime, formatter);
+
+        LocalDateTime thisDate = LocalDateTime.now().plusDays(14);
+        if(date != null && time != null){
+            thisDate = LocalDateTime.parse(dateAndTime, formatter);
+        }
         Task cardTask = new Task(todo, null, null,
                 thisDate.getYear(), thisDate.getMonthValue(),
                 thisDate.getDayOfMonth(), thisDate.getHour(), thisDate.getMinute());

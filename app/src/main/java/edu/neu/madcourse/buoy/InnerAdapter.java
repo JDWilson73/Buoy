@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 /**
@@ -23,6 +25,7 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerViewHol
     public interface InnerItemClickListener {
         void onItemClick(int pos);
         void onCheckClick(int pos);
+        void onDeleteClick(int pos);
     }
 
     public void setOnInnerClickListener(InnerItemClickListener listener) {
@@ -32,11 +35,13 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerViewHol
     public static class InnerViewHolder extends RecyclerView.ViewHolder{
         public CheckBox checkItem;
         public TextView text;
+        public FloatingActionButton delete;
 
         public InnerViewHolder(@NonNull View itemView, final InnerItemClickListener listener) {
             super(itemView);
             checkItem = itemView.findViewById(R.id.mini_header);
             text = itemView.findViewById(R.id.more_details);
+            delete = itemView.findViewById(R.id.task_delete_button);
 
             itemView.setOnClickListener(v -> {
                 if(listener != null){
@@ -52,6 +57,15 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerViewHol
                     int position = getBindingAdapterPosition();
                     if(position != RecyclerView.NO_POSITION){
                         listener.onCheckClick(position);
+                    }
+                }
+            });
+
+            delete.setOnClickListener(v -> {
+                if(listener != null){
+                    int position = getBindingAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onDeleteClick(position);
                     }
                 }
             });

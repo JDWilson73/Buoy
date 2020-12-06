@@ -57,6 +57,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         void onItemClick();
         void onDeletePressed();
         void onTodoAddPressed();
+        void onCompletePressed();
     }
 
     public void setOnItemClickListener(ItemClickListener listener) {
@@ -67,7 +68,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         TextView header;
         FloatingActionButton deleteButton;
         Button todoAdd;
-        //EditText checkBoxInput;
+        Button completeList;
 
 
         public ItemViewHolder(@NonNull View itemView, final ItemClickListener listener) {
@@ -76,6 +77,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             //this.checkBoxInput = (EditText)itemView.findViewById(R.id.checkBoxInput);
             this.deleteButton = (FloatingActionButton) itemView.findViewById(R.id.listDeleteButton);
             this.todoAdd = (Button)itemView.findViewById(R.id.checkBoxAdd);
+            this.completeList = (Button)itemView.findViewById(R.id.complete_list_button);
 
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,11 +97,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     if(listener != null) {
                         int position = getBindingAdapterPosition();
                         if (position != RecyclerView.NO_POSITION){
-                            //String todo = checkBoxInput.getText().toString();
                             listener.onTodoAddPressed();
-                            //listener.onItemClick();
 
                         }
+                    }
+                }
+            });
+            completeList.setOnClickListener(v -> {
+                if(listener != null){
+                    int position = getBindingAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION){
+                        listener.onCompletePressed();
                     }
                 }
             });

@@ -9,6 +9,8 @@ public class TaskList {
     String listTitle;
     List<Task> taskList;
     boolean isFinished;
+    String location;
+
 
     public TaskList() {
         this.listTitle = "default";
@@ -45,8 +47,19 @@ public class TaskList {
     public boolean isFinished(){ return isFinished; }
 
     public void setFinished(boolean finished) {
-        if (this.isFinished != finished) {
+            if (this.isFinished != finished) {
+                for(Task task : this.taskList){
+                    task.setCompleted(true);
+                }
             this.isFinished = finished;
         }
+    }
+
+    public String getLocation(){
+        return location;
+    }
+
+    public void setLocation(String newLocation){
+        this.location = newLocation;
     }
 }

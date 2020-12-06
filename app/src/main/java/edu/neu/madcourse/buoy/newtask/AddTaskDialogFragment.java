@@ -22,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import edu.neu.madcourse.buoy.ItemAdapter;
 import edu.neu.madcourse.buoy.ItemCard;
 import edu.neu.madcourse.buoy.R;
@@ -40,6 +43,9 @@ public class AddTaskDialogFragment extends DialogFragment {
     static final String PARENTADAPTER = "Parent Adapter";
     static final String PARENTCARD = "Parent Card";
     static final String PARENTINDEX = "Parent Index";
+
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
+    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
 
     public AddTaskDialogFragment(){
 
@@ -64,6 +70,10 @@ public class AddTaskDialogFragment extends DialogFragment {
         this.parentAdapter = getArguments().getParcelable(PARENTADAPTER);
         this.parentCard = getArguments().getParcelable(PARENTCARD);
         this.parentIndex = getArguments().getInt(PARENTINDEX);
+
+        LocalDateTime localDateTime = LocalDateTime.now().plusDays(14);
+        this.date = localDateTime.format(dateFormatter);
+        this.time = localDateTime.format(timeFormatter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
