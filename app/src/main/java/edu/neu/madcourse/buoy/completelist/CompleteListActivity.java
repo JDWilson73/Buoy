@@ -44,7 +44,6 @@ import edu.neu.madcourse.buoy.listobjects.TaskList;
 public class CompleteListActivity extends AppCompatActivity {
     static final String PLACEHOLDERITEMCARD = "itemCard placeHolder";
     private DatabaseReference mdataBase;
-    private FirebaseAuth mFirebaseAuth;
     private String uid;
     private List<TaskList> listOfLists;
     private TaskList taskList;
@@ -134,7 +133,9 @@ public class CompleteListActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                if(shareLocation.isChecked() && !locationName.equals(LOCERROR) && !locationName.equals(LOCATIONNAME)){
+                if(shareLocation.isChecked() && !locationName.equals(LOCERROR)
+                        && !locationName.equals(LOCATIONNAME)
+                        && !locationName.equals(NOPERMISSIONS)){
                     taskList.setLocation(locationName);
                 }
                 taskList.setFinished(true);
@@ -195,7 +196,7 @@ public class CompleteListActivity extends AppCompatActivity {
                 }
             }
         } else {
-            locationName = LOCATIONNAME;
+            locationName = NOPERMISSIONS;
             //TODO add something for completing list.
         }
     }

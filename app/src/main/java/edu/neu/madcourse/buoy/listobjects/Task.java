@@ -46,11 +46,11 @@ public class Task {
         this.buoys = new ArrayList<>();
         this.likes = 0;
 
-        Buoys testBuoy = new Buoys("You can Do it!",
-                new User("UID", "userName", "Test", "User", "email", "123"));
-        this.buoys.add(testBuoy);
-        this.buoys.add(testBuoy);
-        this.buoys.add(testBuoy);
+//        Buoys testBuoy = new Buoys("You can Do it!",
+//                new User("UID", "userName", "Test", "User", "email", "123"));
+//        this.buoys.add(testBuoy);
+//        this.buoys.add(testBuoy);
+//        this.buoys.add(testBuoy);
     }
 
     public String getTaskTitle() {

@@ -7,6 +7,7 @@ https://medium.com/androiddevelopers/merge-adapters-sequentially-with-mergeadapt
 https://developer.android.com/guide/topics/ui/controls/checkbox
 https://medium.com/techmacademy/how-to-read-and-write-booleans-in-a-parcelable-class-99e5948db58d
 https://stackoverflow.com/questions/22323974/how-to-get-city-name-by-latitude-longitude-in-android
+https://medium.com/@douglas.iacovelli/android-send-result-back-through-multiple-activities-finished-or-not-4c2ba9e95112
  */
 
 import androidx.annotation.NonNull;
@@ -68,10 +69,10 @@ import edu.neu.madcourse.buoy.completelist.CompleteListActivity;
 import edu.neu.madcourse.buoy.listobjects.Task;
 import edu.neu.madcourse.buoy.listobjects.TaskList;
 import edu.neu.madcourse.buoy.newtask.AddTaskDialogFragment;
+import edu.neu.madcourse.buoy.seebuoys.ViewBuoyActivity;
 
 // TODO: If we add achievements, add category spinners to dialog box.
-// TODO: Be able to delete task, see task's buoy's, complete a list button --> new activity or fragment to get location etc..
-// TODO: Add a view completed lists button at top, only show uncompleted lists in this activity.
+// TODO: see task buoys
 public class userList extends AppCompatActivity implements AddTaskDialogFragment.AddTaskDialogListener {
     static final int REQUEST_CODE = 173;
     static final String PLACEHOLDERITEMCARD = "itemCard placeHolder";
@@ -310,10 +311,15 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
             ArrayList<InnerItemCard> list = this.itemCardArrayList.get(i).getHeaderList();
             InnerAdapter adapter = new InnerAdapter(list);
             this.innerAdapters.put(this.itemCardArrayList.get(i), adapter);
+            int finalI = i;
             adapter.setOnInnerClickListener(new InnerAdapter.InnerItemClickListener() {
                 @Override
                 public void onItemClick(int pos) {
-                    //some action happens here, probably go to buoy's?.
+                    Intent viewBuoy = new Intent(userList.this, ViewBuoyActivity.class);
+                    viewBuoy.putExtra("uid", uid);
+                    viewBuoy.putExtra("taskListforBuoy", finalI);
+                    viewBuoy.putExtra("taskinListforBuoy", pos);
+                    startActivity(viewBuoy);
                 }
 
                 @Override
