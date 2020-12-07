@@ -7,4 +7,5 @@
     -->
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_profile">profile</string>
+    <string name="profile_name">UserName</string>
 </resources>

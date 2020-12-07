@@ -14,7 +14,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.neu.madcourse.buoy.listobjects.TaskList;
@@ -32,7 +31,7 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        mTextView = (TextView) findViewById(R.id.text);
+        mTextView = (TextView) findViewById(R.id.profileUsername);
 
         //get User's Task List
         mdataBase = FirebaseDatabase.getInstance().getReference();
@@ -42,6 +41,7 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
+                mTextView.setText(user.firstName + " " + user.lastName);
                 userTaskList = user.getTaskLists();
             }
 
