@@ -21,7 +21,6 @@ import java.util.List;
 public class FriendActivity extends AppCompatActivity {
 
     FirebaseAuth mFirebaseAuth;
-    Button addFriendButton;
     TextView usernameInput;
     DatabaseReference mdataBase;
 
@@ -32,7 +31,6 @@ public class FriendActivity extends AppCompatActivity {
     }
 
     public void executeAddFriend(View view) {
-        addFriendButton = findViewById(R.id.addFriendButton);
         usernameInput = findViewById(R.id.usernameInput);
 
         final String newFriend = usernameInput.getText().toString();
@@ -55,12 +53,10 @@ public class FriendActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-            //String username = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("userName");
         });
     }
 
     public void executeRemoveFriend(View view) {
-        addFriendButton = findViewById(R.id.addFriendButton);
         usernameInput = findViewById(R.id.usernameInput);
 
         final String newFriend = usernameInput.getText().toString();
@@ -83,7 +79,6 @@ public class FriendActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-            //String username = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("userName");
         });
     }
 
@@ -95,6 +90,7 @@ public class FriendActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean addedToOtherList = false;
+                boolean alreadyFriended = true;
                 for(DataSnapshot child: snapshot.getChildren()) {
                     String friendUID = child.getKey();
                     assert friendUID != null;
@@ -105,32 +101,34 @@ public class FriendActivity extends AppCompatActivity {
                         userName = "";
                     }
                     List<String> friends = (List<String>)child.child("friends").getValue();
+                    assert friends != null;
                     if(friend1.equals(userName)) {
-                        friends.add(friend2);
+                        if (!friends.contains(friend2)) {
+                            alreadyFriended = false;
+                            friends.add(friend2);
+                        }
                         ref.child(friendUID).child("friends").setValue(friends);
                     }
                     if(friend2.equals(userName)) {
                         addedToOtherList = true;
-                        friends.add(friend1);
+                        if (!friends.contains(friend1)) {
+                            friends.add(friend1);
+                        }
                         ref.child(friendUID).child("friends").setValue(friends);
                     }
                 }
                 // Just in case the username input by the user doesn't actually exist, we'll undo it
                 if (!addedToOtherList) {
-                    removeFriend(friend1, friend2);
+                    removeFriend(friend1, friend2, true);
+
+                    Toast.makeText(FriendActivity.this,"User not found",Toast.LENGTH_LONG).show();
                 }
-                // TODO turn sticker send into friend list viewing activity? friend cards could have add/delete buttons
-//
-//
-//                //User user = child.getValue(User.class);
-//                List<String> friendList1 = (List<String>) snapshot.child("Users").child(friend1).child("friends").getValue();
-//                List<String> friendList2 = (List<String>) snapshot.child("Users").child(friend2).child("friends").getValue();
-//
-//                friendList1.add(friend2);
-//                friendList2.add(friend1);
-//
-//                mdataBase.child("Users").child(friend1).child("friends").setValue(friendList1);
-//                mdataBase.child("Users").child(friend2).child("friends").setValue(friendList2);
+                else if (alreadyFriended) {
+                    Toast.makeText(FriendActivity.this,"Already friends with this user",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(FriendActivity.this,"Friend added!",Toast.LENGTH_LONG).show();
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -141,6 +139,10 @@ public class FriendActivity extends AppCompatActivity {
     }
 
     protected void removeFriend(final String friend1, final String friend2) {
+        removeFriend(friend1, friend2, false);
+    }
+
+    protected void removeFriend(final String friend1, final String friend2, final boolean noToast) {
 
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users");
         ref.keepSynced(true);
@@ -148,8 +150,8 @@ public class FriendActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                boolean wasFriend = false;
                 for(DataSnapshot child: snapshot.getChildren()) {
-                    //User user = child.getValue(User.class);
                     String friendUID = child.getKey();
                     assert friendUID != null;
                     String userName;
@@ -159,32 +161,26 @@ public class FriendActivity extends AppCompatActivity {
                         userName = "";
                     }
                     List<String> friends = (List<String>)child.child("friends").getValue();
+                    assert friends != null;
                     if(friend1.equals(userName)) {
-                        //if (!friends.contains(friend2)) {
-                        friends.remove(friend2);
-                        //}
+                        if (friends.contains(friend2)) {
+                            wasFriend = true;
+                            friends.remove(friend2);
+                        }
                         ref.child(friendUID).child("friends").setValue(friends);
                     }
                     if(friend2.equals(userName)) {
-                        //if (!friends.contains(friend1)) {
                         friends.remove(friend1);
-                        // }
                         ref.child(friendUID).child("friends").setValue(friends);
                     }
                 }
-                // TODO removeFriend
-                // TODO make friends the only one to appear in sticker send rather than all users
-//
-//
-//                //User user = child.getValue(User.class);
-//                List<String> friendList1 = (List<String>) snapshot.child("Users").child(friend1).child("friends").getValue();
-//                List<String> friendList2 = (List<String>) snapshot.child("Users").child(friend2).child("friends").getValue();
-//
-//                friendList1.add(friend2);
-//                friendList2.add(friend1);
-//
-//                mdataBase.child("Users").child(friend1).child("friends").setValue(friendList1);
-//                mdataBase.child("Users").child(friend2).child("friends").setValue(friendList2);
+
+                if (wasFriend && !noToast) {
+                    Toast.makeText(FriendActivity.this,"Friend removed",Toast.LENGTH_LONG).show();
+                }
+                else if (!noToast) {
+                    Toast.makeText(FriendActivity.this,"No such friend to remove",Toast.LENGTH_LONG).show();
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
