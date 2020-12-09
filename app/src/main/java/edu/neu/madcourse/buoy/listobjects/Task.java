@@ -109,4 +109,12 @@ public class Task {
     public void setSubCategory(String subCategory) {
         this.subCategory = subCategory;
     }
+
+    //if isOtherTaskDueSooner is true, then other task is due sooner.
+    public boolean isOtherTaskDueSooner(Task other){
+        LocalDateTime thisDue = LocalDateTime.parse(this.getDueDate(), formatter);
+        LocalDateTime otherDue = LocalDateTime.parse(other.getDueDate(), formatter);
+        //isBefore = true means that this is older than other
+        return thisDue.isBefore(otherDue);
+    }
 }

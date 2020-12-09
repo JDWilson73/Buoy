@@ -72,7 +72,6 @@ import edu.neu.madcourse.buoy.newtask.AddTaskDialogFragment;
 import edu.neu.madcourse.buoy.seebuoys.ViewBuoyActivity;
 
 // TODO: If we add achievements, add category spinners to dialog box.
-// TODO: see task buoys
 public class userList extends AppCompatActivity implements AddTaskDialogFragment.AddTaskDialogListener {
     static final int REQUEST_CODE = 173;
     static final String PLACEHOLDERITEMCARD = "itemCard placeHolder";
@@ -92,6 +91,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
     private FirebaseAuth mFirebaseAuth;
     private List<TaskList> userTaskList; //arrayList
     static final String UID = "userID";
+    private User user;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy hh:mm a");
 
@@ -114,7 +114,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         mdataBase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
+                user = snapshot.getValue(User.class);
                 //itemCardArrayList = user.getItemCardArrayList();
                 userTaskList = user.getTaskLists();
                 taskListTranslateToItemCardLists(); //translate user's task lists to item card lists
@@ -199,6 +199,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                         userTaskList.add(defaultList);
                     }
                     mdataBase.child("taskLists").setValue(userTaskList);
+                    mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
                 }
 
                 @Override
@@ -209,10 +210,16 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
 
                 @Override
                 public void onCompletePressed() {
-                    Intent completeList = new Intent(userList.this, CompleteListActivity.class);
-                    completeList.putExtra("uid", uid);
-                    completeList.putExtra("taskListComplete", finalI);
-                    startActivityForResult(completeList, REQUEST_CODE);
+                    if(itemCardArrayList.get(finalI).getHeaderList().isEmpty()){
+                        Toast.makeText(userList.this,
+                                "There are no tasks in this list. List must have tasks to complete.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Intent completeList = new Intent(userList.this, CompleteListActivity.class);
+                        completeList.putExtra("uid", uid);
+                        completeList.putExtra("taskListComplete", finalI);
+                        startActivityForResult(completeList, REQUEST_CODE);
+                    }
                 }
 
             });
@@ -329,6 +336,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
                                     list.get(pos).setChecked();
                                     adapter.notifyDataSetChanged();
                                 }
@@ -349,10 +357,12 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                 public void onDeleteClick(int pos) {
                     Task removedTask = tasks.get(pos);
                     tasks.remove(pos);
+                    user.setTaskLists(userTaskList);
                     mdataBase.child("taskLists").setValue(userTaskList)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
                                     list.remove(pos);
                                     adapter.notifyDataSetChanged();
                                 }
@@ -462,6 +472,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
                             InnerAdapter innerListAdapter = innerAdapters.get(card);
                             card.addToHeaderList(newToDo);
                             innerListAdapter.notifyDataSetChanged();

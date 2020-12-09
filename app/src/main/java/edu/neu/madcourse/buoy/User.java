@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import edu.neu.madcourse.buoy.ItemCard;
 
+import edu.neu.madcourse.buoy.listobjects.AchievementCategory;
 import edu.neu.madcourse.buoy.listobjects.Task;
 import edu.neu.madcourse.buoy.listobjects.TaskList;
 
@@ -29,10 +30,13 @@ public class User {
     String token;
     List<TaskList> taskLists;
     List<TaskList> completedLists;
+    int buoysSent;
 
     // Friends' usernames stored instead of the entire User reference. Hopefully will keep
     // recursive BS from happening...
     List<String> friends;
+
+    Task dueSoonestTask;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -55,13 +59,24 @@ public class User {
 
         //Placeholder TaskList so attribute doesn't disappear from firebase.
         List<TaskList> taskLists = new ArrayList<>();
-        TaskList defaultList = new TaskList(PLACEHOLDERITEMCARD);
+        TaskList defaultList = new TaskList("My First List!");
         taskLists.add(defaultList);
         this.taskLists = taskLists;
-        this.completedLists = taskLists;
+
+        List<TaskList> completedList = new ArrayList<>();
+        TaskList defList = new TaskList(PLACEHOLDERITEMCARD);
+        completedList.add(defList);
+        this.completedLists = completedList;
 
         this.friends = new ArrayList<>();
         this.friends.add("default");
+
+        //set a default due soonest task as new user has no new tasks.
+        LocalDateTime now = LocalDateTime.now();
+        this.dueSoonestTask = new Task("PlaceHolder Task", null, null, now.getYear(),
+        now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute());
+
+        this.buoysSent = 0;
     }
 
     public String getUid() {
@@ -151,6 +166,43 @@ public class User {
 
     public void setCompletedLists(List<TaskList> completedLists) {
         this.completedLists = completedLists;
+    }
+
+    public Task getDueSoonestTask() {
+        return dueSoonestTask;
+    }
+
+    public void setDueSoonestTask(Task dueSoonestTask) {
+        this.dueSoonestTask = dueSoonestTask;
+    }
+
+    /**
+     * call this method to find the soonest task due. use setSoonestTask to set it for user object.
+     * @return
+     */
+    public Task findSoonestTask() {
+        LocalDateTime minTime = LocalDateTime.now().minusYears(100);
+        Task current = new Task("PlaceHolder Task", null, null,
+                minTime.getYear(), minTime.getMonthValue(), minTime.getDayOfMonth(),
+                minTime.getHour(), minTime.getMinute());
+        for(TaskList each : this.taskLists){
+            for(Task eachTask : each.getTaskList()){
+                if(!eachTask.isCompleted()) { //if the task isn't completed
+                    if (current.isOtherTaskDueSooner(eachTask)) { //check if each task is due sooner than current
+                        current = eachTask; //if each task is due sooner than current, each task is set to current.
+                    }
+                }
+            }
+        }
+        return current;
+    }
+
+    public int getBuoysSent() {
+        return buoysSent;
+    }
+
+    public void setBuoysSent(int buoysSent) {
+        this.buoysSent = buoysSent;
     }
 
     // TODO make sticker send show only friends rather than all users

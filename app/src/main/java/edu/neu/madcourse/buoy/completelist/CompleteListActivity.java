@@ -55,6 +55,7 @@ public class CompleteListActivity extends AppCompatActivity {
     private CheckBox shareLocation;
     private int listIndex;
     private List<TaskList> completedLists;
+    private User user;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private int locationRequestCode = 12;
@@ -81,7 +82,7 @@ public class CompleteListActivity extends AppCompatActivity {
             mdataBase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User user = snapshot.getValue(User.class);
+                    user = snapshot.getValue(User.class);
                     listOfLists = user.getTaskLists();
                     taskList = listOfLists.get(listIndex);
                     completedLists = user.getCompletedLists();
@@ -146,6 +147,7 @@ public class CompleteListActivity extends AppCompatActivity {
                 completedLists.add(taskList);
                 mdataBase.child("taskLists").setValue(listOfLists);
                 mdataBase.child("completedLists").setValue(completedLists);
+                mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
