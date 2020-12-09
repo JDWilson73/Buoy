@@ -49,10 +49,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         btnLogout = findViewById(R.id.logout);
         btnStickerGoTo = findViewById(R.id.sendStickerButton);
-        btnUserSettings = findViewById(R.id.userSettings);
-        btnUserLists = findViewById(R.id.home_goto_user_list);
-
-        friendButton = findViewById(R.id.friendButton);
 
         doItCount = findViewById(R.id.do_it_counter);
         keepUpCount = findViewById(R.id.keep_up_counter);
