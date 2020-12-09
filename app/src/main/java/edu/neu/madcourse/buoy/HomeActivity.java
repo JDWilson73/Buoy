@@ -83,15 +83,6 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intoSticker);
             }
         });
-        btnUserLists.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(HomeActivity.this, userList.class);
-                startActivity(i);
-            }
-        });
-
-
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,24 +90,6 @@ public class HomeActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 Intent intoMain = new Intent(HomeActivity.this, MainActivity.class);
                 startActivity(intoMain);
-            }
-        });
-
-        btnUserSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent userSettingsGoTo = new Intent(HomeActivity.this,
-                        UserSettingsActivity.class);
-                startActivity(userSettingsGoTo);
-            }
-        });
-
-        friendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent friendsGoTo = new Intent(HomeActivity.this,
-                        FriendActivity.class);
-                startActivity(friendsGoTo);
             }
         });
 
