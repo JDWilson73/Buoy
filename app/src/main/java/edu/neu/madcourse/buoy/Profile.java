@@ -1,12 +1,15 @@
 package edu.neu.madcourse.buoy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,6 +54,35 @@ public class Profile extends AppCompatActivity {
             }
         });
 
+        BottomNavigationView navi = (BottomNavigationView) findViewById(R.id.navigation);
+        navi.setItemIconTintList(null);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.Home:
+                        Intent home = new Intent(Profile.this, HomeActivity.class);
+                        startActivity(home);
+                        break;
+                    case R.id.Profile:
+                        break;
+                    case R.id.Friends:
+                        Intent friends = new Intent(Profile.this, FriendActivity.class);
+                        startActivity(friends);
+                        break;
+                    case R.id.Settings:
+                        Intent settings = new Intent(Profile.this, UserSettingsActivity.class);
+                        startActivity(settings);
+                        break;
+                    case R.id.Lists:
+                        Intent lists = new Intent(Profile.this, userList.class);
+                        startActivity(lists);
+                        break;
+                }
+
+                return false;
+            }
+        });
     }
 
     //TODO: Display User's first/last name, username, top x number of tasks due soon.

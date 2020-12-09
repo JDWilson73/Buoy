@@ -32,6 +32,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -42,6 +43,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -154,6 +156,36 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                         // fine nevermind then I didn't want you to have fun anyway
                     }
                 }
+            }
+        });
+
+        BottomNavigationView navi = (BottomNavigationView) findViewById(R.id.navigation);
+        navi.setItemIconTintList(null);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.Home:
+                        Intent home = new Intent(userList.this, HomeActivity.class);
+                        startActivity(home);
+                        break;
+                    case R.id.Profile:
+                        Intent profile = new Intent(userList.this, Profile.class);
+                        startActivity(profile);
+                        break;
+                    case R.id.Friends:
+                        Intent friends = new Intent(userList.this, FriendActivity.class);
+                        startActivity(friends);
+                        break;
+                    case R.id.Settings:
+                        Intent settings = new Intent(userList.this, UserSettingsActivity.class);
+                        startActivity(settings);
+                        break;
+                    case R.id.Lists:
+                        break;
+                }
+
+                return false;
             }
         });
     }

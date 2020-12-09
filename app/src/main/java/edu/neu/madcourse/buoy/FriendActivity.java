@@ -3,12 +3,15 @@ package edu.neu.madcourse.buoy;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +31,36 @@ public class FriendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend);
+
+        BottomNavigationView navi = (BottomNavigationView) findViewById(R.id.navigation);
+        navi.setItemIconTintList(null);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.Home:
+                        Intent home = new Intent(FriendActivity.this, HomeActivity.class);
+                        startActivity(home);
+                        break;
+                    case R.id.Profile:
+                        Intent profile = new Intent(FriendActivity.this, Profile.class);
+                        startActivity(profile);
+                        break;
+                    case R.id.Friends:
+                        break;
+                    case R.id.Settings:
+                        Intent settings = new Intent(FriendActivity.this, UserSettingsActivity.class);
+                        startActivity(settings);
+                        break;
+                    case R.id.Lists:
+                        Intent lists = new Intent(FriendActivity.this, userList.class);
+                        startActivity(lists);
+                        break;
+                }
+
+                return false;
+            }
+        });
     }
 
     public void executeAddFriend(View view) {

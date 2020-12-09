@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -121,6 +123,39 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(friendsGoTo);
             }
         });
-        //addFriend("testswag5", "testswag6");
+
+        BottomNavigationView navi = (BottomNavigationView) findViewById(R.id.navigation);
+        navi.setItemIconTintList(null);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.Home:
+                        break;
+                    case R.id.Profile:
+                        Intent profile = new Intent(HomeActivity.this, Profile.class);
+                        startActivity(profile);
+                        break;
+                    case R.id.Friends:
+                        Intent friends = new Intent(HomeActivity.this, FriendActivity.class);
+                        startActivity(friends);
+                        break;
+                    case R.id.Settings:
+                        Intent settings = new Intent(HomeActivity.this, UserSettingsActivity.class);
+                        startActivity(settings);
+                        break;
+                    case R.id.Lists:
+                        Intent lists = new Intent(HomeActivity.this, userList.class);
+                        startActivity(lists);
+                        break;
+                }
+
+                return false;
+            }
+
+        });
+
+
+
     }
 }

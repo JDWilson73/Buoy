@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,6 +62,36 @@ public class UserSettingsActivity extends AppCompatActivity {
                 i.putExtra("username", userName.toString());
                 startActivity(i);
 
+            }
+        });
+
+        BottomNavigationView navi = (BottomNavigationView) findViewById(R.id.navigation);
+        navi.setItemIconTintList(null);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.Home:
+                        Intent home = new Intent(UserSettingsActivity.this, HomeActivity.class);
+                        startActivity(home);
+                        break;
+                    case R.id.Profile:
+                        Intent profile = new Intent(UserSettingsActivity.this, Profile.class);
+                        startActivity(profile);
+                        break;
+                    case R.id.Friends:
+                        Intent friends = new Intent(UserSettingsActivity.this, FriendActivity.class);
+                        startActivity(friends);
+                        break;
+                    case R.id.Settings:
+                        break;
+                    case R.id.Lists:
+                        Intent lists = new Intent(UserSettingsActivity.this, userList.class);
+                        startActivity(lists);
+                        break;
+                }
+
+                return false;
             }
         });
     }

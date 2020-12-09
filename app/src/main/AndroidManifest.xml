@@ -32,7 +32,7 @@
         <activity
             android:name=".userList"
             android:windowSoftInputMode="adjustPan">
-            >
+
         </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
