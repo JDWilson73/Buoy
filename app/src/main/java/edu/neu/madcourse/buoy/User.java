@@ -104,17 +104,12 @@ public class User {
             @Override
             public synchronized void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    String category = child.getValue().toString();
+                    String category = child.getKey();
                     achievementCounts.put(category, 0);
                 }
 
                 FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("AchievementCounts").setValue(achievementCounts);
             }
-            // TODO fill spinner with choices from the database
-            // TODO I think the spinner needs to be moved to the inner item card, the one for the actual list item, not the list itself--need to find where it's made, so I can put the filling spinner logic there
-            // TODO get selection from spinner, write that into the task object
-            // TODO when task is marked completed, retrieve the category, increment the count for that category in the user AchievementCounts in database
-            // TODO put values in database for the cutoffs for the achievements (like 7 points for fitness); make the map Category -> Count in database, then change child.getValue() in line 107 to child.getKey()
             // TODO in profile, do the calculations for each cutoff/count and see which achievements the user has collected
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

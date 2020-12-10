@@ -160,7 +160,7 @@ public class AddTaskDialogFragment extends DialogFragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 categories = new ArrayList<>();
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    categories.add(child.getValue().toString());
+                    categories.add(child.getKey());
                 }
 
                 ArrayAdapter<CharSequence> catAdapt = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, categories.toArray());
