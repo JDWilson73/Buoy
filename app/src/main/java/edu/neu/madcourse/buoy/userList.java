@@ -373,6 +373,32 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+
+                                    int delta;
+                                    if (tasks.get(pos).isCompleted()) {
+                                        delta = 1;
+                                    }
+                                    else {
+                                        delta = -1;
+                                    }
+
+                                    mdataBase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            String category = tasks.get(pos).getAchievementCategory();
+                                            Map<String, Long> achievementCounts = (HashMap<String, Long>) snapshot.child("AchievementCounts").getValue();
+                                            achievementCounts.put(category, achievementCounts.get(category) + delta);
+
+                                            mdataBase.child("AchievementCounts").setValue(achievementCounts);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+
                                     mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
                                     list.get(pos).setChecked();
                                     adapter.notifyDataSetChanged();
@@ -487,6 +513,8 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         String time = dialog.getTime();
         String dateAndTime = date + " " + time;
 
+        String achievementSelection = dialog.getSpinnerSelection();
+
         InnerItemCard newToDo = new InnerItemCard(todo, dateAndTime); //new inner card
         //Parses string of date and time into LocalDateTime Object
 
@@ -494,7 +522,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         if(date != null && time != null){
             thisDate = LocalDateTime.parse(dateAndTime, formatter);
         }
-        Task cardTask = new Task(todo, null, null,
+        Task cardTask = new Task(todo, achievementSelection, null,
                 thisDate.getYear(), thisDate.getMonthValue(),
                 thisDate.getDayOfMonth(), thisDate.getHour(), thisDate.getMinute());
 

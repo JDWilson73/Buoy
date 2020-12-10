@@ -63,6 +63,8 @@ public class AddTaskDialogFragment extends DialogFragment {
 
     Spinner achievementSpinner;
 
+    String spinnerSelection;
+
     public AddTaskDialogFragment(){
 
     }
@@ -129,6 +131,9 @@ public class AddTaskDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String input = todoText.getText().toString();
                         if(!input.isEmpty()){
+
+                            spinnerSelection = achievementSpinner.getSelectedItem().toString();
+
                             toDo = todoText.getText().toString();
                             listener.onPositiveClick(AddTaskDialogFragment.this);
                         }else {
@@ -214,4 +219,9 @@ public class AddTaskDialogFragment extends DialogFragment {
     public ItemCard getParentCard() {
         return parentCard;
     }
+
+    public String getSpinnerSelection() {
+        return spinnerSelection;
+    }
+
 }
