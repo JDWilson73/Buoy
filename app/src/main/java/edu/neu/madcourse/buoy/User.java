@@ -205,6 +205,7 @@ public class User {
         this.buoysSent = buoysSent;
     }
 
+
     // TODO make sticker send show only friends rather than all users
     // TODO add buttons to add/remove friend and text entry fields to input username of friend to remove
 }

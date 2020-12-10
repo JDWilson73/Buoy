@@ -19,9 +19,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
 
     public interface ItemClickListener {
         void onItemClick(int pos);
-        void onVibesClick(int pos);
-        void onKeepClick(int pos);
-        void onDoItClick(int pos);
+        void onBuoyClick(int pos);
     }
 
     public void setOnItemClickListener(ItemClickListener listener) {this.listener = listener;}
@@ -30,16 +28,16 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
         public TextView friendName;
         public TextView userName;
         public ImageButton keepUp;
-        public ImageButton goodVibes;
-        public ImageButton doIt;
+        public TextView taskName;
+        public TextView dueDate;
 
         public StickerViewHolder(@NonNull View itemView, final ItemClickListener listener) {
             super(itemView);
             friendName = itemView.findViewById(R.id.full_name);
             userName = itemView.findViewById(R.id.username);
             keepUp = itemView.findViewById(R.id.keep_up);
-            goodVibes = itemView.findViewById(R.id.good_vibes);
-            doIt = itemView.findViewById(R.id.do_it);
+            taskName = itemView.findViewById(R.id.top_task);
+            dueDate = itemView.findViewById(R.id.friend_due_date);
 
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -60,33 +58,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
                     if(listener != null){
                         int position = getLayoutPosition();
                         if(position != RecyclerView.NO_POSITION) {
-                            listener.onKeepClick(position);
-                        }
-                    }
-                }
-            });
-
-            goodVibes.setOnClickListener(new View.OnClickListener(){
-
-                @Override
-                public void onClick(View v) {
-                    if(listener != null){
-                        int position = getLayoutPosition();
-                        if(position != RecyclerView.NO_POSITION) {
-                            listener.onVibesClick(position);
-                        }
-                    }
-                }
-            });
-
-            doIt.setOnClickListener(new View.OnClickListener(){
-
-                @Override
-                public void onClick(View v) {
-                    if(listener != null){
-                        int position = getLayoutPosition();
-                        if(position != RecyclerView.NO_POSITION) {
-                            listener.onDoItClick(position);
+                            listener.onBuoyClick(position);
                         }
                     }
                 }
@@ -112,6 +84,8 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
         FriendItemCard current = friendList.get(position);
         holder.friendName.setText(current.getFirstName() +" "+ current.getLastName());
         holder.userName.setText(current.getUserName());
+        holder.taskName.setText(current.getSoonestDueTask());
+        holder.dueDate.setText(current.getDueDate());
 
     }
 

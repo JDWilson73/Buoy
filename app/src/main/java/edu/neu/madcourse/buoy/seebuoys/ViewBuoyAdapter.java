@@ -31,7 +31,7 @@ public class ViewBuoyAdapter extends RecyclerView.Adapter<ViewBuoyAdapter.ViewBu
     public void onBindViewHolder(@NonNull ViewBuoyViewHolder holder, int position) {
         Buoys current = buoyList.get(position);
         StringBuilder friendString = new StringBuilder();
-        friendString.append(current.getFriend().getFirstName()).append(" ").append(current.getFriend().getLastName());
+        friendString.append(current.getFriend());
         holder.friend.setText(friendString.toString());
         holder.buoy.setText(current.getComment());
         holder.buoyDate.setText(current.getCommentDate());

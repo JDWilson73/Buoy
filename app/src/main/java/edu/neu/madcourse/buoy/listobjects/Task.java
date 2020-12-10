@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import edu.neu.madcourse.buoy.User;
 
@@ -116,5 +117,25 @@ public class Task {
         LocalDateTime otherDue = LocalDateTime.parse(other.getDueDate(), formatter);
         //isBefore = true means that this is older than other
         return thisDue.isBefore(otherDue);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return completed == task.completed &&
+                likes == task.likes &&
+                Objects.equals(taskTitle, task.taskTitle) &&
+                Objects.equals(achievementCategory, task.achievementCategory) &&
+                Objects.equals(subCategory, task.subCategory) &&
+                Objects.equals(dueDate, task.dueDate) &&
+                Objects.equals(buoys, task.buoys) &&
+                Objects.equals(formatter, task.formatter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskTitle, achievementCategory, subCategory, completed, dueDate, buoys, likes, formatter);
     }
 }

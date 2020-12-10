@@ -35,23 +35,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        startVideo();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.editTextEmailAddress);
         password = findViewById(R.id.editTextPassword);
         btnSignIn = findViewById(R.id.signInButton);
         btnSignUp = findViewById(R.id.signUpButton);
-        final VideoView videoview = (VideoView) findViewById(R.id.videoView);
-//        ConstraintLayout layout = findViewById()
-        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.background_waves);
-        videoview.setVideoURI(uri);
-        videoview.start();
-        videoview.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                videoview.start();
-            }
-        });
+
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +96,26 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private void startVideo(){
+        new Thread(new runBackgroundVideo()).start();
+    }
+
+    private class runBackgroundVideo implements Runnable{
+
+        @Override
+        public void run() {
+            final VideoView videoview = (VideoView) findViewById(R.id.videoView);
+            Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.background_waves);
+            videoview.setVideoURI(uri);
+            videoview.start();
+            videoview.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    videoview.start();
+                }
+            });
+        }
     }
 
 

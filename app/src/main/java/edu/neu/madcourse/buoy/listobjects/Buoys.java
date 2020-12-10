@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import edu.neu.madcourse.buoy.User;
 
 public class Buoys {
-    User friend;
+    String friendName;
     String comment;
     String commentDate;
 
@@ -17,18 +17,18 @@ public class Buoys {
     }
 
     public Buoys(String comment, User user){
-        this.friend = user;
+        this.friendName = user.getFirstName() + " " + user.getLastName();
         this.comment = comment;
         //should we set some character limit for a comment?
         this.commentDate = LocalDateTime.now().format(formatter); //set date to time commented.
     }
 
-    public User getFriend() {
-        return friend;
+    public String getFriend() {
+        return friendName;
     }
 
     public void setFriend(User friend) {
-        this.friend = friend;
+        this.friendName = friend.getFirstName() + " " + friend.getLastName();
     }
 
     public String getComment() {

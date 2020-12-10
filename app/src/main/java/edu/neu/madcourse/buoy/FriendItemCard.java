@@ -8,18 +8,25 @@ public class FriendItemCard implements Parcelable {
     private String firstName;
     private String lastName;
     private String userID;
+    private String soonestDueTask;
+    private String dueDate;
 
-    public FriendItemCard(String userName, String firstName, String lastName, String userID){
+    public FriendItemCard(String userName, String firstName, String lastName, String userID, String soonestDueTask, String dueDate){
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userID = userID;
+        this.soonestDueTask = soonestDueTask;
+        this.dueDate = dueDate;
     }
 
     protected FriendItemCard(Parcel in){
         userName = in.readString();
         firstName = in.readString();
         lastName = in.readString();
+        soonestDueTask = in.readString();
+        dueDate = in.readString();
+        userID = in.readString();
     }
 
     public static final Creator<FriendItemCard> CREATOR = new Creator<FriendItemCard>(){
@@ -52,6 +59,14 @@ public class FriendItemCard implements Parcelable {
         return userID;
     }
 
+    public String getSoonestDueTask() {
+        return soonestDueTask;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -62,6 +77,9 @@ public class FriendItemCard implements Parcelable {
         dest.writeString(userName);
         dest.writeString(firstName);
         dest.writeString(lastName);
+        dest.writeString(userID);
+        dest.writeString(soonestDueTask);
+        dest.writeString(dueDate);
     }
 
 }

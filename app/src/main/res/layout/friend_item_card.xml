@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="226dp"
+        android:layout_height="wrap_content"
         android:layout_margin="5dp">
 
         <TextView
@@ -18,11 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="47dp"
             android:text="FirstName LastName"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/good_vibes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,47 +31,9 @@
             android:layout_below="@id/full_name"
             android:layout_marginStart="16dp"
             android:layout_marginTop="53dp"
-            android:layout_marginBottom="18dp"
             android:text="username"
-            app:layout_constraintBottom_toTopOf="@+id/do_it"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/do_it"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="120dp"
-            android:layout_height="0dp"
-            android:layout_below="@+id/username"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="16dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/good_vibes"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/username"
-            app:srcCompat="@drawable/doit" />
-
-        <ImageButton
-            android:id="@+id/good_vibes"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="120dp"
-            android:layout_height="0dp"
-            android:layout_below="@+id/username"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="16dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/keep_up"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/do_it"
-            app:layout_constraintTop_toBottomOf="@+id/full_name"
-            app:srcCompat="@drawable/goodvibes" />
 
         <ImageButton
             android:id="@+id/keep_up"
@@ -82,16 +42,48 @@
             android:layout_height="0dp"
             android:layout_below="@+id/username"
             android:layout_alignParentBottom="true"
-            android:layout_toStartOf="@+id/good_vibes"
-            android:layout_toEndOf="@+id/do_it"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="@+id/good_vibes"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/good_vibes"
-            app:layout_constraintTop_toTopOf="@+id/good_vibes"
+            app:layout_constraintTop_toBottomOf="@+id/username"
             app:srcCompat="@drawable/keepup" />
+
+        <TextView
+            android:id="@+id/top_task"
+            android:layout_width="208dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Task"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@+id/friend_due_date"
+            app:layout_constraintStart_toStartOf="@+id/username"
+            app:layout_constraintTop_toTopOf="@+id/keep_up" />
+
+        <TextView
+            android:id="@+id/friend_due_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textSize="18sp"
+            android:text="Task Due Date"
+            app:layout_constraintBottom_toBottomOf="@+id/keep_up"
+            app:layout_constraintStart_toStartOf="@+id/top_task" />
+
+        <TextView
+            android:id="@+id/send_buoy_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Send a buoy for this task!"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/keep_up"
+            app:layout_constraintEnd_toEndOf="@+id/keep_up"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/keep_up"
+            app:layout_constraintTop_toBottomOf="@+id/full_name" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

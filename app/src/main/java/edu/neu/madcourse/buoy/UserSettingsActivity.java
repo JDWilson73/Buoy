@@ -24,12 +24,14 @@ public class UserSettingsActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     DatabaseReference mdataBase;
     private DatabaseReference mDatabase;
+    Button btnLogout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_setings_activty);
+        btnLogout = findViewById(R.id.logout);
 
         firstName = findViewById(R.id.userSettingsFirstNameFill);
         lastName = findViewById(R.id.userSettingsLastNameFill);
@@ -62,6 +64,15 @@ public class UserSettingsActivity extends AppCompatActivity {
                 i.putExtra("username", userName.toString());
                 startActivity(i);
 
+            }
+        });
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intoMain = new Intent(UserSettingsActivity.this, MainActivity.class);
+                startActivity(intoMain);
             }
         });
 
