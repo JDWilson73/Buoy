@@ -1,5 +1,13 @@
 package edu.neu.madcourse.buoy;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,6 +46,17 @@ public class User {
 
     Task dueSoonestTask;
 
+    public HashMap<String, Integer> getAchievementCounts() {
+        return achievementCounts;
+    }
+
+    public void setAchievementCounts(HashMap<String, Integer> achievementCounts) {
+        this.achievementCounts = achievementCounts;
+    }
+
+    HashMap<String, Integer> achievementCounts;
+    DatabaseReference mdataBase;
+
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
@@ -74,9 +93,29 @@ public class User {
         //set a default due soonest task as new user has no new tasks.
         LocalDateTime now = LocalDateTime.now();
         this.dueSoonestTask = new Task("PlaceHolder Task", null, null, now.getYear(),
-        now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute());
+                now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute());
 
         this.buoysSent = 0;
+
+        achievementCounts = new HashMap<>();
+
+        mdataBase = FirebaseDatabase.getInstance().getReference().child("AchievementCategories");
+        mdataBase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public synchronized void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String category = child.getKey();
+                    achievementCounts.put(category, 0);
+                }
+
+                FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("AchievementCounts").setValue(achievementCounts);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public String getUid() {

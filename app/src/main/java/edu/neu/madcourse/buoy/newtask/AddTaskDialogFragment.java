@@ -14,20 +14,34 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.neu.madcourse.buoy.ItemAdapter;
 import edu.neu.madcourse.buoy.ItemCard;
 import edu.neu.madcourse.buoy.R;
+import edu.neu.madcourse.buoy.User;
 
 
 public class AddTaskDialogFragment extends DialogFragment {
@@ -47,6 +61,10 @@ public class AddTaskDialogFragment extends DialogFragment {
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
 
+    Spinner achievementSpinner;
+
+    String spinnerSelection;
+
     public AddTaskDialogFragment(){
 
     }
@@ -65,6 +83,7 @@ public class AddTaskDialogFragment extends DialogFragment {
         void onPositiveClick(AddTaskDialogFragment dialog);
     }
 
+    List<String> categories;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
         this.parentAdapter = getArguments().getParcelable(PARENTADAPTER);
@@ -81,6 +100,9 @@ public class AddTaskDialogFragment extends DialogFragment {
         final EditText todoText = (EditText)dialogView.findViewById(R.id.to_do_task_name);
         final Button setDate = (Button)dialogView.findViewById(R.id.set_date);
         final Button setTime = (Button)dialogView.findViewById(R.id.set_time);
+        achievementSpinner = (Spinner)dialogView.findViewById(R.id.achievementSpinner);
+
+        setCategories();
 
         final FragmentManager fm = ((AppCompatActivity)getActivity()).getSupportFragmentManager();
         setDate.setOnClickListener(new View.OnClickListener(){
@@ -109,6 +131,9 @@ public class AddTaskDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String input = todoText.getText().toString();
                         if(!input.isEmpty()){
+
+                            spinnerSelection = achievementSpinner.getSelectedItem().toString();
+
                             toDo = todoText.getText().toString();
                             listener.onPositiveClick(AddTaskDialogFragment.this);
                         }else {
@@ -125,6 +150,29 @@ public class AddTaskDialogFragment extends DialogFragment {
 
         return builder.create();
 
+    }
+
+
+    private synchronized void setCategories() {
+        DatabaseReference mdataBase = FirebaseDatabase.getInstance().getReference("AchievementCategories");
+        mdataBase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                categories = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    categories.add(child.getKey());
+                }
+
+                ArrayAdapter<CharSequence> catAdapt = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, categories.toArray());
+                catAdapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                achievementSpinner.setAdapter(catAdapt);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -171,4 +219,9 @@ public class AddTaskDialogFragment extends DialogFragment {
     public ItemCard getParentCard() {
         return parentCard;
     }
+
+    public String getSpinnerSelection() {
+        return spinnerSelection;
+    }
+
 }

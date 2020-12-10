@@ -5,14 +5,10 @@ Documentation:
 LocalDateTime
 https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html
  */
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
-
-import edu.neu.madcourse.buoy.User;
 
 /**
  * This represents a task object. A task is part of list and has a category (badge purposes), title,
@@ -20,7 +16,7 @@ import edu.neu.madcourse.buoy.User;
  */
 public class Task {
     String taskTitle;
-    AchievementCategory achievementCategory;
+    String achievementCategory;
     String subCategory;
     boolean completed;
     String dueDate;
@@ -36,7 +32,7 @@ public class Task {
         this.dueDate = LocalDateTime.now().plusDays(14).format(formatter);
     }
 
-    public Task(String title, AchievementCategory achievementCategory, String subCategory, int year,
+    public Task(String title, String achievementCategory, String subCategory, int year,
                 int month, int day, int hour, int min){
         this.taskTitle = title;
         LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, min);
@@ -95,11 +91,11 @@ public class Task {
         this.likes ++;
     }
 
-    public AchievementCategory getAchievementCategory() {
+    public String getAchievementCategory() {
         return achievementCategory;
     }
 
-    public void setAchievementCategory(AchievementCategory achievementCategory) {
+    public void setAchievementCategory(String achievementCategory) {
         this.achievementCategory = achievementCategory;
     }
 
