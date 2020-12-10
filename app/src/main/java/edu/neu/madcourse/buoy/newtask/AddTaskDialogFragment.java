@@ -14,20 +14,34 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.neu.madcourse.buoy.ItemAdapter;
 import edu.neu.madcourse.buoy.ItemCard;
 import edu.neu.madcourse.buoy.R;
+import edu.neu.madcourse.buoy.User;
 
 
 public class AddTaskDialogFragment extends DialogFragment {
@@ -47,6 +61,8 @@ public class AddTaskDialogFragment extends DialogFragment {
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
 
+    Spinner achievementSpinner;
+
     public AddTaskDialogFragment(){
 
     }
@@ -65,6 +81,7 @@ public class AddTaskDialogFragment extends DialogFragment {
         void onPositiveClick(AddTaskDialogFragment dialog);
     }
 
+    List<String> categories;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
         this.parentAdapter = getArguments().getParcelable(PARENTADAPTER);
@@ -123,8 +140,64 @@ public class AddTaskDialogFragment extends DialogFragment {
                     }
                 });
 
+
+
+
+
+
+
+
         return builder.create();
 
+    }
+    FragmentActivity activity;
+    @Override
+    public synchronized View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.new_task_dialog_layout, container);
+        achievementSpinner = view.findViewById(R.id.achievementSpinner);
+
+        setCategories();
+
+
+/*
+
+        categories = new ArrayList<>();
+        categories.add("A");
+        categories.add("B");
+        ArrayAdapter<CharSequence> catAdapt = new ArrayAdapter(this.getActivity(), android.R.layout.simple_spinner_item, categories.toArray());
+        catAdapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        achievementSpinner.setAdapter(catAdapt);
+
+
+*/
+
+        activity = this.getActivity();
+        return view;
+    }
+
+    private synchronized void setCategories() {
+        DatabaseReference mdataBase = FirebaseDatabase.getInstance().getReference("AchievementCategories");
+        mdataBase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                categories = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    categories.add(child.getValue().toString());
+                }
+
+                ArrayAdapter<CharSequence> catAdapt = new ArrayAdapter(activity, android.R.layout.simple_spinner_item, categories.toArray());
+                catAdapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                achievementSpinner.setAdapter(catAdapt);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override

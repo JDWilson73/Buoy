@@ -1,18 +1,27 @@
 package edu.neu.madcourse.buoy;
 
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for expanded items of parent list--> i.e. below the header. Can be tasks or buoy's of tasks
@@ -36,12 +45,14 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerViewHol
         public CheckBox checkItem;
         public TextView text;
         public FloatingActionButton delete;
+        //public Spinner achievementSpinner;
 
         public InnerViewHolder(@NonNull View itemView, final InnerItemClickListener listener) {
             super(itemView);
             checkItem = itemView.findViewById(R.id.mini_header);
             text = itemView.findViewById(R.id.more_details);
             delete = itemView.findViewById(R.id.task_delete_button);
+            //achievementSpinner = itemView.findViewById(R.id.achievementSpinner);
 
             itemView.setOnClickListener(v -> {
                 if(listener != null){
@@ -51,6 +62,15 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerViewHol
                     }
                 }
             });
+
+/*            achievementSpinner.setOnClickListener(v -> {
+                if(listener != null){
+                    int position = getBindingAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(position);
+                    }
+                }
+            });*/
 
             checkItem.setOnClickListener(v -> {
                 if(listener != null){

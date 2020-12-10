@@ -35,8 +35,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -97,8 +99,6 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy hh:mm a");
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +131,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Reading from DB error", error.getMessage());
+
             }
         });
 
@@ -340,7 +340,6 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         recyclerView.setLayoutManager(rLayoutManager);
     }
 
-
     //populate nested lists and associated inner adapters of parent.
     private void populateInnerAdapterList() {
         this.innerAdapters = new HashMap<>();
@@ -351,6 +350,12 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
             InnerAdapter adapter = new InnerAdapter(list);
             this.innerAdapters.put(this.itemCardArrayList.get(i), adapter);
             int finalI = i;
+
+/*            achievementSpinner = findViewById(R.id.achievementSpinner);
+            ArrayAdapter<CharSequence> catAdapt = new ArrayAdapter(this, android.R.layout.simple_spinner_item, categories.toArray());
+            catAdapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            achievementSpinner.setAdapter(catAdapt);*/
+
             adapter.setOnInnerClickListener(new InnerAdapter.InnerItemClickListener() {
                 @Override
                 public void onItemClick(int pos) {
