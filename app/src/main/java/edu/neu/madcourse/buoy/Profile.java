@@ -17,7 +17,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.neu.madcourse.buoy.listobjects.TaskList;
 
@@ -29,12 +31,14 @@ public class Profile extends AppCompatActivity {
 
     private TextView mTextView;
 
+    String achievements;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        mTextView = (TextView) findViewById(R.id.profileUsername);
+        //mTextView = (TextView) findViewById(R.id.profileUsername);
 
         //get User's Task List
         mdataBase = FirebaseDatabase.getInstance().getReference();
@@ -44,7 +48,7 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                mTextView.setText(user.firstName + " " + user.lastName);
+                //mTextView.setText(user.firstName + " " + user.lastName);
                 userTaskList = user.getTaskLists();
             }
 
@@ -83,8 +87,36 @@ public class Profile extends AppCompatActivity {
                 return false;
             }
         });
+
+        calculateAchievements();
+
     }
 
+    private void calculateAchievements() {
+        DatabaseReference ndataBase = FirebaseDatabase.getInstance().getReference();
+        ndataBase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String cheevos = "";
+                Map<String, Long> achievementCounts = (HashMap<String, Long>) snapshot.child("Users").child(uid).child("AchievementCounts").getValue();
+                for (String s : achievementCounts.keySet()) {
+                    Long threshold = (Long) snapshot.child("AchievementCategories").child(s).child("threshold").getValue();
+                    if (achievementCounts.get(s) >= threshold) {
+                        cheevos += snapshot.child("AchievementCategories").child(s).child("title").getValue().toString() + "  ";
+                    }
+                }
+
+                cheevos = cheevos.trim();
+                TextView achievementsText = findViewById(R.id.achievements);
+                achievementsText.setText(cheevos);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     //TODO: Display User's first/last name, username, top x number of tasks due soon.
     //TODO: When adding achievement badges, display those in horizontal scrolling recycler view as well.
 }

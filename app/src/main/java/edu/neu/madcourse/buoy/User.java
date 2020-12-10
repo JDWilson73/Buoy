@@ -110,7 +110,7 @@ public class User {
 
                 FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("AchievementCounts").setValue(achievementCounts);
             }
-            // TODO in profile, do the calculations for each cutoff/count and see which achievements the user has collected
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
