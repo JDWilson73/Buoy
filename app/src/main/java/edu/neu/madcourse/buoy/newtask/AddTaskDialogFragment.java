@@ -98,6 +98,9 @@ public class AddTaskDialogFragment extends DialogFragment {
         final EditText todoText = (EditText)dialogView.findViewById(R.id.to_do_task_name);
         final Button setDate = (Button)dialogView.findViewById(R.id.set_date);
         final Button setTime = (Button)dialogView.findViewById(R.id.set_time);
+        achievementSpinner = (Spinner)dialogView.findViewById(R.id.achievementSpinner);
+
+        setCategories();
 
         final FragmentManager fm = ((AppCompatActivity)getActivity()).getSupportFragmentManager();
         setDate.setOnClickListener(new View.OnClickListener(){
@@ -140,43 +143,10 @@ public class AddTaskDialogFragment extends DialogFragment {
                     }
                 });
 
-
-
-
-
-
-
-
         return builder.create();
 
     }
-    FragmentActivity activity;
-    @Override
-    public synchronized View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.new_task_dialog_layout, container);
-        achievementSpinner = view.findViewById(R.id.achievementSpinner);
-
-        setCategories();
-
-
-/*
-
-        categories = new ArrayList<>();
-        categories.add("A");
-        categories.add("B");
-        ArrayAdapter<CharSequence> catAdapt = new ArrayAdapter(this.getActivity(), android.R.layout.simple_spinner_item, categories.toArray());
-        catAdapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        achievementSpinner.setAdapter(catAdapt);
-
-
-*/
-
-        activity = this.getActivity();
-        return view;
-    }
 
     private synchronized void setCategories() {
         DatabaseReference mdataBase = FirebaseDatabase.getInstance().getReference("AchievementCategories");
@@ -188,7 +158,7 @@ public class AddTaskDialogFragment extends DialogFragment {
                     categories.add(child.getValue().toString());
                 }
 
-                ArrayAdapter<CharSequence> catAdapt = new ArrayAdapter(activity, android.R.layout.simple_spinner_item, categories.toArray());
+                ArrayAdapter<CharSequence> catAdapt = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, categories.toArray());
                 catAdapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 achievementSpinner.setAdapter(catAdapt);
             }
