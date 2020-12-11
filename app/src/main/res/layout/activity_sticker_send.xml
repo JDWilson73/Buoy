@@ -31,13 +31,14 @@
 
     <TextView
         android:id="@+id/no_friends"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="361dp"
+        android:layout_height="122dp"
         android:text="Hey, it doesn't seem like you've connected with your friends yet. Add them to your list to see what they're doing."
         android:textSize="26sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="@+id/recyclerViewFriends"
+        app:layout_constraintHorizontal_bias="0.68"
         app:layout_constraintStart_toStartOf="@+id/recyclerViewFriends"
         app:layout_constraintTop_toTopOf="parent" />
 

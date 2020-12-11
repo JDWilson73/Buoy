@@ -73,6 +73,8 @@ public class FirstSignInActivity extends AppCompatActivity {
                             lastName.setError("last name can't be empty");
                         } else if (userNameString.isEmpty()) {
                             userName.setError("username can't be empty");
+                        } else if (userNameString.length() > 14) {
+                            userName.setError("username is too long!");
                         } else if (isTaken) {
                             userName.setError("username is taken, please pick another name");
                         } else {
