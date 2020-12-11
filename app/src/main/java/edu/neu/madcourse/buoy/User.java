@@ -75,6 +75,7 @@ public class User {
         this.totalStickers = 0;
         this.email = email;
         this.token = token;
+//        this.achievementCounts = new HashMap<>();
 
         //Placeholder TaskList so attribute doesn't disappear from firebase.
         List<TaskList> taskLists = new ArrayList<>();

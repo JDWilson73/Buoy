@@ -335,12 +335,12 @@ public class HomeActivity extends AppCompatActivity implements AddBuoyDialogBox.
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData currentData) {
-                User currentUser = currentData.getValue(User.class);
+                Integer currentUser = (Integer) currentData.child("buoysSent").getValue();
                 if (currentUser == null) {
                     return Transaction.success(currentData);
                 }
 
-                currentUser.buoysSent = currentUser.buoysSent + 1; //increment sticker count by 1
+                currentUser ++; //increment sticker count by 1
                 currentData.setValue(currentUser);
                 return Transaction.success(currentData);
             }
