@@ -29,7 +29,8 @@ public class Profile extends AppCompatActivity {
     private List<TaskList> userTaskList;
     private String uid;
 
-    private TextView mTextView;
+    private TextView userNameText;
+    private TextView userUserameText;
 
     String achievements;
 
@@ -38,8 +39,8 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        //mTextView = (TextView) findViewById(R.id.profileUsername);
-
+        userNameText = (TextView) findViewById(R.id.userFNameLName);
+        userUserameText = (TextView) findViewById(R.id.userUsername);
         //get User's Task List
         mdataBase = FirebaseDatabase.getInstance().getReference();
         uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -48,7 +49,9 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                //mTextView.setText(user.firstName + " " + user.lastName);
+                userNameText.setText(user.firstName + " " + user.lastName);
+                userUserameText.setText(user.userName);
+
                 userTaskList = user.getTaskLists();
             }
 
@@ -102,7 +105,7 @@ public class Profile extends AppCompatActivity {
                 for (String s : achievementCounts.keySet()) {
                     Long threshold = (Long) snapshot.child("AchievementCategories").child(s).child("threshold").getValue();
                     if (achievementCounts.get(s) >= threshold) {
-                        cheevos += snapshot.child("AchievementCategories").child(s).child("title").getValue().toString() + "  ";
+                        cheevos += snapshot.child("AchievementCategories").child(s).child("title").getValue().toString() + " \n";
                     }
                 }
 
