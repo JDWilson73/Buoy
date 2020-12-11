@@ -142,7 +142,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                 String name = newListInput.getText().toString();
                 if (name.isEmpty()) {
                     newListInput.setError("List must have a name");
-                } else if (name.length() > 15) {
+                } else if (name.length() > 80) {
                     newListInput.setError("List name is too long");
                 } else {
                     newList(name); //add new list to DB
@@ -224,6 +224,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     concatAdapter.removeAdapter(item);
                     itemCardArrayList.remove(card);
                     concatAdapterSet();
+                    resetRecyclerView();
 
                     userTaskList.remove(finalI);
                     if (userTaskList.size() == 0) {
@@ -553,5 +554,20 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                         }
                     });
         }
+    }
+
+    private void resetRecyclerView(){
+        ConcatAdapter newConcat = new ConcatAdapter();
+
+        for(int i = 0; i<this.parentAdapters.size(); i++){
+            ItemAdapter parent = this.parentAdapters.get(i);
+            newConcat.addAdapter(parent);
+            ItemCard parentCard = itemCardArrayList.get(i);
+            if(parentCard.isExpanded()){
+                newConcat.addAdapter(innerAdapters.get(itemCardArrayList.get(i)));
+            }
+        }
+        this.concatAdapter = newConcat;
+        this.recyclerView.setAdapter(concatAdapter);
     }
 }
