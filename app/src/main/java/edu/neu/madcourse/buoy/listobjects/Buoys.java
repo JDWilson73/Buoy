@@ -16,8 +16,8 @@ public class Buoys {
 
     }
 
-    public Buoys(String comment, User user){
-        this.friendName = user.getFirstName() + " " + user.getLastName();
+    public Buoys(String comment, String userName){
+        this.friendName = userName;
         this.comment = comment;
         //should we set some character limit for a comment?
         this.commentDate = LocalDateTime.now().format(formatter); //set date to time commented.
@@ -27,8 +27,8 @@ public class Buoys {
         return friendName;
     }
 
-    public void setFriend(User friend) {
-        this.friendName = friend.getFirstName() + " " + friend.getLastName();
+    public void setFriend(String userName) {
+        this.friendName = userName;
     }
 
     public String getComment() {

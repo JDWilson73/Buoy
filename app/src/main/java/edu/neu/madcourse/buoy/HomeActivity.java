@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity implements AddBuoyDialogBox.
     static final String FRIEND_CARD_LIST = "friendCardList";
     private String friendToken;
     private String uid;//this user's id
-    private User user; //this user.
+    //private User user; //this user.
     private TextView noFriendsSry;
 
     private List<String> userFriends;
@@ -64,7 +64,7 @@ public class HomeActivity extends AppCompatActivity implements AddBuoyDialogBox.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sticker_send);
         friendList = new ArrayList<>();
@@ -78,11 +78,11 @@ public class HomeActivity extends AppCompatActivity implements AddBuoyDialogBox.
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public synchronized void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(User.class);
-                thisUsername = user.userName;
+                //user = snapshot.getValue(User.class);
+                thisUsername =(String)snapshot.child("userName").getValue();
                 setTitle("Welcome, " + thisUsername);
 
-                userFriends = user.getFriends();
+                userFriends = (List<String>)snapshot.child("friends").getValue();
                 getUsers();
 
 
@@ -243,13 +243,13 @@ public class HomeActivity extends AppCompatActivity implements AddBuoyDialogBox.
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User friendUser = snapshot.getValue(User.class);
                         friendToken = friendUser.token;
-                        final String friendName = user.getUserName();
+                        final String friendName = thisUsername;
                         List<TaskList> listList = friendUser.getTaskLists();
                         for (TaskList eachList : listList) {
                             for (Task eachTask : eachList.getTaskList()) {
                                 if (eachTask.getTaskTitle().equals(friendUser.getDueSoonestTask().getTaskTitle())
                                         && eachTask.getDueDate().equals(friendUser.getDueSoonestTask().getDueDate())) {
-                                    eachTask.addBuoy(new Buoys(buoyComment, user));
+                                    eachTask.addBuoy(new Buoys(buoyComment, thisUsername));
                                     break;
                                 }
                             }
