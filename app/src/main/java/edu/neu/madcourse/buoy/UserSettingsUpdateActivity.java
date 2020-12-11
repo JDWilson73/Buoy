@@ -64,8 +64,7 @@ public class UserSettingsUpdateActivity extends AppCompatActivity {
                 mdataBase.child("firstName").setValue(firstNameUpdate);
                 mdataBase.child("lastName").setValue(lastNameUpdate);
                 mdataBase.child("userName").setValue(userNameUpdate);
-                Intent i = new Intent(UserSettingsUpdateActivity.this, UserSettingsActivity.class);
-                startActivity(i);
+                finish();
 
             }
         });
