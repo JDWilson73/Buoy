@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,6 +30,7 @@ import java.util.List;
 public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerViewHolder> {
     private ArrayList<InnerItemCard> innerListItems;
     private InnerItemClickListener listener;
+    private ItemCard parent;
 
     //Put in methods for when clicking the item card.
     public interface InnerItemClickListener {
@@ -90,10 +92,18 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerViewHol
                 }
             });
         }
+        public void show(boolean show){
+            if(!show) {
+                itemView.setVisibility(View.GONE);
+            }else {
+                itemView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
-    public InnerAdapter(ArrayList<InnerItemCard> innerList){
+    public InnerAdapter(ItemCard parent, ArrayList<InnerItemCard> innerList){
         this.innerListItems = innerList;
+        this.parent = parent;
     }
 
     @NonNull
@@ -105,7 +115,19 @@ public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.InnerViewHol
 
     @Override
     public void onBindViewHolder(@NonNull InnerViewHolder holder, int position) {
+        RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = 100;
+        params.rightMargin = 10;
+        params.bottomMargin = 5;
+
         InnerItemCard current = innerListItems.get(position);
+        if (parent.isExpanded()){
+            holder.show(true);
+            holder.itemView.setLayoutParams(params);
+        } else {
+            holder.show(false);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+        }
         holder.checkItem.setText(current.getHeader());
         holder.text.setText(current.getDate());
         holder.checkItem.setChecked(current.isChecked());

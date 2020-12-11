@@ -207,11 +207,13 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                 public synchronized void onItemClick() {
                     ItemCard itemCard = itemCardArrayList.get(finalI);
                     if (itemCard.isExpanded()) { //if inner list is already expanded, tap should close list.
-                        concatAdapter.removeAdapter(Objects.requireNonNull(innerAdapters.get(itemCard)));
+                        //concatAdapter.removeAdapter(Objects.requireNonNull(innerAdapters.get(itemCard)));
                         itemCard.setExpanded();
+                        innerAdapters.get(itemCard).notifyDataSetChanged();
                     } else { //else expand list.
                         itemCard.setExpanded(); //set expanded to true
-                        concatAdapterSet(); //show concat adapter list
+                        innerAdapters.get(itemCard).notifyDataSetChanged();
+                        //concatAdapterSet(); //show concat adapter list
                     }
                     item.notifyDataSetChanged();
                 }
@@ -223,8 +225,6 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     innerAdapters.remove(card);
                     concatAdapter.removeAdapter(item);
                     itemCardArrayList.remove(card);
-                    //concatAdapterSet();
-
 
                     userTaskList.remove(finalI);
                     if (userTaskList.size() == 0) {
@@ -233,7 +233,12 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     }
                     mdataBase.child("taskLists").setValue(userTaskList);
                     mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
-                    resetRecyclerView();
+
+
+                    //resetRecyclerView();
+                    item.notifyDataSetChanged();
+                    concatAdapterSet();
+                    //recreate();
                 }
 
                 @Override
@@ -259,6 +264,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
             });
         }
         populateInnerAdapterList();
+        concatAdapterSet();
     }
 
     public void newList(String name) {
@@ -346,17 +352,13 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
     private void populateInnerAdapterList() {
         this.innerAdapters = new HashMap<>();
         for (int i = 0; i < this.itemCardArrayList.size(); i++) {
+            ItemCard parentCard = itemCardArrayList.get(i);
             TaskList taskList = this.userTaskList.get(i);
             List<Task> tasks = taskList.getTaskList();
             ArrayList<InnerItemCard> list = this.itemCardArrayList.get(i).getHeaderList();
-            InnerAdapter adapter = new InnerAdapter(list);
+            InnerAdapter adapter = new InnerAdapter(parentCard, list);
             this.innerAdapters.put(this.itemCardArrayList.get(i), adapter);
             int finalI = i;
-
-/*            achievementSpinner = findViewById(R.id.achievementSpinner);
-            ArrayAdapter<CharSequence> catAdapt = new ArrayAdapter(this, android.R.layout.simple_spinner_item, categories.toArray());
-            catAdapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            achievementSpinner.setAdapter(catAdapt);*/
 
             adapter.setOnInnerClickListener(new InnerAdapter.InnerItemClickListener() {
                 @Override
@@ -456,10 +458,10 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         for (int i = 0; i < this.parentAdapters.size(); i++) {
             ItemCard currentParent = this.itemCardArrayList.get(i);
             concatIndex++;
-            if (currentParent.isExpanded()) {
+            //if (currentParent.isExpanded()) {
                 concatAdapter.addAdapter(concatIndex, Objects.requireNonNull(this.innerAdapters.get(currentParent)));
                 concatIndex++;
-            }
+            //}
         }
     }
 
