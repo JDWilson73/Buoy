@@ -223,8 +223,8 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     innerAdapters.remove(card);
                     concatAdapter.removeAdapter(item);
                     itemCardArrayList.remove(card);
-                    concatAdapterSet();
-                    resetRecyclerView();
+                    //concatAdapterSet();
+
 
                     userTaskList.remove(finalI);
                     if (userTaskList.size() == 0) {
@@ -233,6 +233,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     }
                     mdataBase.child("taskLists").setValue(userTaskList);
                     mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
+                    resetRecyclerView();
                 }
 
                 @Override

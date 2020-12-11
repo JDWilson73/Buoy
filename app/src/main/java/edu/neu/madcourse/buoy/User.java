@@ -38,7 +38,6 @@ public class User {
     String token;
     List<TaskList> taskLists;
     List<TaskList> completedLists;
-    int buoysSent;
 
     // Friends' usernames stored instead of the entire User reference. Hopefully will keep
     // recursive BS from happening...
@@ -95,8 +94,6 @@ public class User {
         LocalDateTime now = LocalDateTime.now();
         this.dueSoonestTask = new Task("PlaceHolder Task", null, null, now.getYear(),
                 now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute());
-
-        this.buoysSent = 0;
 
         achievementCounts = new HashMap<>();
 
@@ -235,14 +232,6 @@ public class User {
             }
         }
         return current;
-    }
-
-    public int getBuoysSent() {
-        return buoysSent;
-    }
-
-    public void setBuoysSent(int buoysSent) {
-        this.buoysSent = buoysSent;
     }
 
 

@@ -137,7 +137,6 @@ public class HomeActivity extends AppCompatActivity implements AddBuoyDialogBox.
 
     @Override
     public void onPositiveClick(AddBuoyDialogBox dialog){
-        createRecyclerView();
         dialog.dismiss();
         sendBuoy(dialog.getPos(), dialog.getBuoyCommentString());
     }
@@ -255,7 +254,7 @@ public class HomeActivity extends AppCompatActivity implements AddBuoyDialogBox.
                             }
                         }
                         ref.child("taskLists").setValue(listList);
-                        updateUserBuoyCount();
+                        //updateUserBuoyCount();
                         Thread sendDeviceThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -329,29 +328,6 @@ public class HomeActivity extends AppCompatActivity implements AddBuoyDialogBox.
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next().replace(",", ",\n") : "";
     }
-
-    private void updateUserBuoyCount() {
-        mdataBase.child("Users").child(this.uid).runTransaction(new Transaction.Handler() {
-            @NonNull
-            @Override
-            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
-                Integer currentUser = (Integer) currentData.child("buoysSent").getValue();
-                if (currentUser == null) {
-                    return Transaction.success(currentData);
-                }
-
-                currentUser ++; //increment sticker count by 1
-                currentData.setValue(currentUser);
-                return Transaction.success(currentData);
-            }
-
-            @Override
-            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-                Log.d("Buoy count Error", "buoy count post activity:onComplete" + error);
-            }
-        });
-    }
-
 
 
 }
