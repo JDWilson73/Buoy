@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserSettingsUpdateActivity extends AppCompatActivity {
-    EditText firstName, lastName, userName;
+    EditText firstName, lastName;
     Button submitButton;
     FirebaseAuth mFirebaseAuth;
     DatabaseReference mdataBase;
@@ -33,7 +33,6 @@ public class UserSettingsUpdateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_settings_update);
         firstName = findViewById(R.id.userSettingsFirstNameFill);
         lastName = findViewById(R.id.userSettingsLastNameFill);
-        userName = findViewById(R.id.userSettingsUserNamefill);
         submitButton = findViewById(R.id.userSettingsUpdateSubmit);
 
         final String uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -44,7 +43,6 @@ public class UserSettingsUpdateActivity extends AppCompatActivity {
                 User user = snapshot.getValue(User.class);
                 firstName.setText(user.firstName);
                 lastName.setText(user.lastName);
-                userName.setText(user.userName);
             }
 
             @Override
@@ -59,11 +57,9 @@ public class UserSettingsUpdateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String firstNameUpdate = firstName.getText().toString();
                 String lastNameUpdate = lastName.getText().toString();
-                String userNameUpdate = userName.getText().toString();
 
                 mdataBase.child("firstName").setValue(firstNameUpdate);
                 mdataBase.child("lastName").setValue(lastNameUpdate);
-                mdataBase.child("userName").setValue(userNameUpdate);
                 finish();
 
             }
