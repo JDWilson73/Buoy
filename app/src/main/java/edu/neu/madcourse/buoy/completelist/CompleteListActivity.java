@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,11 +33,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import edu.neu.madcourse.buoy.R;
 import edu.neu.madcourse.buoy.User;
+import edu.neu.madcourse.buoy.listobjects.Task;
 import edu.neu.madcourse.buoy.listobjects.TaskList;
 
 public class CompleteListActivity extends AppCompatActivity {
@@ -56,6 +58,7 @@ public class CompleteListActivity extends AppCompatActivity {
     private int listIndex;
     private List<TaskList> completedLists;
     private User user;
+    private Map<String, Long> achievementCounts;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private int locationRequestCode = 12;
@@ -85,6 +88,8 @@ public class CompleteListActivity extends AppCompatActivity {
                     user = snapshot.getValue(User.class);
                     listOfLists = user.getTaskLists();
                     taskList = listOfLists.get(listIndex);
+                    achievementCounts = (HashMap<String, Long>) snapshot.child("AchievementCounts").getValue();
+
                     completedLists = user.getCompletedLists();
                     for(int i = 0; i < completedLists.size(); i++) {
                         if(completedLists.get(i).getListTitle().equals(PLACEHOLDERITEMCARD)){
@@ -139,6 +144,15 @@ public class CompleteListActivity extends AppCompatActivity {
                         && !locationName.equals(NOPERMISSIONS)){
                     taskList.setLocation(locationName);
                 }
+
+                for(Task each : taskList.getTaskList()){
+                    if(!each.isCompleted()){
+                        each.setCompleted(true);
+                        String category = each.getAchievementCategory();
+                        achievementCounts.put(category, achievementCounts.get(category) + 1);
+                    }
+                }
+
                 taskList.setFinished(true);
                 listOfLists.remove(taskList);
                 if(listOfLists.isEmpty()){
@@ -148,6 +162,7 @@ public class CompleteListActivity extends AppCompatActivity {
                 mdataBase.child("taskLists").setValue(listOfLists);
                 mdataBase.child("completedLists").setValue(completedLists);
                 mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
+                mdataBase.child("AchievementCounts").setValue(achievementCounts);
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
