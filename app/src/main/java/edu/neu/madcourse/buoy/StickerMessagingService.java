@@ -50,7 +50,7 @@ public class StickerMessagingService extends FirebaseMessagingService {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Toast toast = Toast.makeText(getApplicationContext(), "You got a new Sticker!",
+                Toast toast = Toast.makeText(getApplicationContext(), "You got a new Buoy!",
                         Toast.LENGTH_SHORT);
                 toast.show();
             }

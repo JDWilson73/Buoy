@@ -314,13 +314,18 @@ public class HomeActivity extends AppCompatActivity implements AddBuoyDialogBox.
                 @Override
                 public void run() {
                     Log.e("TAG", "run: " + resp);
-                    Toast.makeText(HomeActivity.this, resp, Toast.LENGTH_LONG).show();
+                    if(resp.contains("\"success\":1,")){
+                        Toast.makeText(HomeActivity.this, "Buoy sent successfully.", Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(HomeActivity.this, "Buoy not successful. Please try again later.", Toast.LENGTH_LONG).show();
+                    }
+                    //Toast.makeText(HomeActivity.this, resp, Toast.LENGTH_LONG).show();
                 }
             });
 
         } catch (JSONException | IOException e) {
             e.printStackTrace();
-            Log.e("TAG", "sticker threw error", e);
+            Log.e("TAG", "buoy threw error", e);
         }
     }
 
