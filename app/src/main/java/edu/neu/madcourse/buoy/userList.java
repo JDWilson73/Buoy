@@ -107,7 +107,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         btnSubmit = findViewById(R.id.userListSubmit);
         newListInput = findViewById(R.id.userListInput);
 
-        createRecyclerView();
+
 
         uid = mFirebaseAuth.getInstance().getCurrentUser().getUid();
         mdataBase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
@@ -116,6 +116,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         mdataBase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 user = snapshot.getValue(User.class);
                 //itemCardArrayList = user.getItemCardArrayList();
                 userTaskList = user.getTaskLists();
@@ -126,7 +127,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     ItemAdapter item = new ItemAdapter(itemCardArrayList.get(i));
                     parentAdapters.add(item);
                 }
-                setAdapters();
+                createRecyclerView();
             }
 
             @Override
@@ -199,31 +200,25 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
 
         for (int i = 0; i < this.parentAdapters.size(); i++) {
             ItemAdapter item = this.parentAdapters.get(i);
-            this.concatAdapter.addAdapter(item);
+            ItemCard card  = itemCardArrayList.get(i);
+            //this.concatAdapter.addAdapter(item);
             int finalI = i;
 
             item.setOnItemClickListener(new ItemAdapter.ItemClickListener() {
                 @Override
                 public synchronized void onItemClick() {
-                    ItemCard itemCard = itemCardArrayList.get(finalI);
-                    if (itemCard.isExpanded()) { //if inner list is already expanded, tap should close list.
-                        //concatAdapter.removeAdapter(Objects.requireNonNull(innerAdapters.get(itemCard)));
-                        itemCard.setExpanded();
-                        innerAdapters.get(itemCard).notifyDataSetChanged();
-                    } else { //else expand list.
-                        itemCard.setExpanded(); //set expanded to true
-                        innerAdapters.get(itemCard).notifyDataSetChanged();
-                        //concatAdapterSet(); //show concat adapter list
-                    }
+                    card.setExpanded();
+                    innerAdapters.get(card).notifyDataSetChanged();
                     item.notifyDataSetChanged();
                 }
 
                 @Override
                 public synchronized void onDeletePressed() {
-                    ItemCard card = itemCardArrayList.get(finalI);
-                    parentAdapters.remove(item);
-                    innerAdapters.remove(card);
                     concatAdapter.removeAdapter(item);
+                    parentAdapters.remove(item);
+
+                    concatAdapter.removeAdapter(innerAdapters.get(card));
+                    innerAdapters.remove(card);
                     itemCardArrayList.remove(card);
 
                     userTaskList.remove(finalI);
@@ -234,22 +229,18 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     mdataBase.child("taskLists").setValue(userTaskList);
                     mdataBase.child("dueSoonestTask").setValue(user.findSoonestTask());
 
-
-                    //resetRecyclerView();
                     item.notifyDataSetChanged();
-                    concatAdapterSet();
-                    //recreate();
+                    createRecyclerView();
                 }
 
                 @Override
                 public synchronized void onTodoAddPressed() {
-                    ItemCard card = itemCardArrayList.get(finalI);
                     launchNewTaskDialogBox(item, finalI, card);
                 }
 
                 @Override
                 public void onCompletePressed() {
-                    if(itemCardArrayList.get(finalI).getHeaderList().isEmpty()){
+                    if(card.getHeaderList().isEmpty()){
                         Toast.makeText(userList.this,
                                 "There are no tasks in this list. List must have tasks to complete.",
                                 Toast.LENGTH_LONG).show();
@@ -282,7 +273,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                 ItemAdapter item = new ItemAdapter(newCard);
                 parentAdapters.add(item);
 
-                setAdapters();
+                createRecyclerView();
                 Toast.makeText(userList.this, "New List added Successfully!", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -313,7 +304,6 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            createRecyclerView();
             mdataBase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -321,12 +311,11 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     userTaskList = user.getTaskLists();
                     taskListTranslateToItemCardLists(); //translate user's task lists to item card lists
                     parentAdapters = new ArrayList<>();
-                    //set itemCardArrayList into parent Adapters list
                     for (int i = 0; i < itemCardArrayList.size(); i++) {
                         ItemAdapter item = new ItemAdapter(itemCardArrayList.get(i));
                         parentAdapters.add(item);
                     }
-                    setAdapters();
+                    createRecyclerView();
                 }
 
                 @Override
@@ -342,13 +331,19 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         recyclerView.setHasFixedSize(true);
 
         this.concatAdapter = new ConcatAdapter();
+        for(int i = 0; i < parentAdapters.size(); i++){
+            concatAdapter.addAdapter(parentAdapters.get(i));
+        }
+
         recyclerView.setAdapter(this.concatAdapter);
 
         RecyclerView.LayoutManager rLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(rLayoutManager);
+
+        setAdapters();
     }
 
-    //populate nested lists and associated inner adapters of parent.
+    //adds inner list adapters to inner adapter list and sets listeners for thos adapters.
     private void populateInnerAdapterList() {
         this.innerAdapters = new HashMap<>();
         for (int i = 0; i < this.itemCardArrayList.size(); i++) {
@@ -439,6 +434,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                                 public void onFailure(@NonNull Exception e) {
                                     //if fail, add task back in
                                     tasks.add(removedTask);
+                                    adapter.notifyDataSetChanged();
                                     Toast.makeText(userList.this,
                                             "Complete Task failed.", Toast.LENGTH_SHORT).show();
                                 }
@@ -449,7 +445,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         }
     }
 
-    //concat needs to be sequential.
+    //concat needs to be sequential, sets inner adapters.
     private void concatAdapterSet() {
         for (Map.Entry<ItemCard, InnerAdapter> each : this.innerAdapters.entrySet()) {
             concatAdapter.removeAdapter(each.getValue());
@@ -458,10 +454,8 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         for (int i = 0; i < this.parentAdapters.size(); i++) {
             ItemCard currentParent = this.itemCardArrayList.get(i);
             concatIndex++;
-            //if (currentParent.isExpanded()) {
                 concatAdapter.addAdapter(concatIndex, Objects.requireNonNull(this.innerAdapters.get(currentParent)));
                 concatIndex++;
-            //}
         }
     }
 
@@ -557,20 +551,5 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                         }
                     });
         }
-    }
-
-    private void resetRecyclerView(){
-        ConcatAdapter newConcat = new ConcatAdapter();
-
-        for(int i = 0; i<this.parentAdapters.size(); i++){
-            ItemAdapter parent = this.parentAdapters.get(i);
-            newConcat.addAdapter(parent);
-            ItemCard parentCard = itemCardArrayList.get(i);
-            if(parentCard.isExpanded()){
-                newConcat.addAdapter(innerAdapters.get(itemCardArrayList.get(i)));
-            }
-        }
-        this.concatAdapter = newConcat;
-        this.recyclerView.setAdapter(concatAdapter);
     }
 }
