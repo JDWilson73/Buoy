@@ -42,6 +42,7 @@ import edu.neu.madcourse.buoy.ItemAdapter;
 import edu.neu.madcourse.buoy.ItemCard;
 import edu.neu.madcourse.buoy.R;
 import edu.neu.madcourse.buoy.User;
+import edu.neu.madcourse.buoy.listobjects.TaskList;
 
 
 public class AddTaskDialogFragment extends DialogFragment {
@@ -49,14 +50,14 @@ public class AddTaskDialogFragment extends DialogFragment {
     private String date;
     private String time;
     private ItemAdapter parentAdapter;
-    private int parentIndex;
+    private TaskList parentTaskList;
     private ItemCard parentCard;
     AddTaskDialogListener listener;
 
     static final int REQUEST_CODE = 121;
     static final String PARENTADAPTER = "Parent Adapter";
     static final String PARENTCARD = "Parent Card";
-    static final String PARENTINDEX = "Parent Index";
+    static final String PARENTTASKLIST = "Parent TaskList";
 
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
@@ -69,12 +70,12 @@ public class AddTaskDialogFragment extends DialogFragment {
 
     }
 
-    public static AddTaskDialogFragment newInstance(ItemAdapter parentAdapter, int parentIndex, ItemCard parentCard){
+    public static AddTaskDialogFragment newInstance(ItemAdapter parentAdapter, TaskList taskList, ItemCard parentCard){
         AddTaskDialogFragment fragment = new AddTaskDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable(PARENTADAPTER, parentAdapter);
         args.putParcelable(PARENTCARD, parentCard);
-        args.putInt(PARENTINDEX, parentIndex);
+        args.putParcelable(PARENTTASKLIST, taskList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,7 +89,7 @@ public class AddTaskDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState){
         this.parentAdapter = getArguments().getParcelable(PARENTADAPTER);
         this.parentCard = getArguments().getParcelable(PARENTCARD);
-        this.parentIndex = getArguments().getInt(PARENTINDEX);
+        this.parentTaskList = getArguments().getParcelable(PARENTTASKLIST);
 
         LocalDateTime localDateTime = LocalDateTime.now().plusDays(14);
         this.date = localDateTime.format(dateFormatter);
@@ -212,8 +213,8 @@ public class AddTaskDialogFragment extends DialogFragment {
         return parentAdapter;
     }
 
-    public int getParentIndex() {
-        return parentIndex;
+    public TaskList getParentTaskList() {
+        return parentTaskList;
     }
 
     public ItemCard getParentCard() {

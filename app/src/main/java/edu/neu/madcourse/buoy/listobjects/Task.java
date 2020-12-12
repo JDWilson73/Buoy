@@ -5,6 +5,9 @@ Documentation:
 LocalDateTime
 https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html
  */
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,7 +17,7 @@ import java.util.Objects;
  * This represents a task object. A task is part of list and has a category (badge purposes), title,
  * due date, completion status, and buoys associated with it.
  */
-public class Task {
+public class Task implements Parcelable {
     String taskTitle;
     String achievementCategory;
     String subCategory;
@@ -49,6 +52,27 @@ public class Task {
 //        this.buoys.add(testBuoy);
 //        this.buoys.add(testBuoy);
     }
+
+    protected Task(Parcel in) {
+        taskTitle = in.readString();
+        achievementCategory = in.readString();
+        subCategory = in.readString();
+        completed = in.readByte() != 0;
+        dueDate = in.readString();
+        likes = in.readInt();
+    }
+
+    public static final Creator<Task> CREATOR = new Creator<Task>() {
+        @Override
+        public Task createFromParcel(Parcel in) {
+            return new Task(in);
+        }
+
+        @Override
+        public Task[] newArray(int size) {
+            return new Task[size];
+        }
+    };
 
     public String getTaskTitle() {
         return taskTitle;
@@ -133,5 +157,20 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(taskTitle, achievementCategory, subCategory, completed, dueDate, buoys, likes, formatter);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(taskTitle);
+        dest.writeString(achievementCategory);
+        dest.writeString(subCategory);
+        dest.writeByte((byte) (completed ? 1 : 0));
+        dest.writeString(dueDate);
+        dest.writeInt(likes);
     }
 }

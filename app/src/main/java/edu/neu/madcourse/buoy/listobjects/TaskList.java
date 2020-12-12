@@ -1,10 +1,13 @@
 package edu.neu.madcourse.buoy.listobjects;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskList {
+public class TaskList implements Parcelable {
 
     String listTitle;
     List<Task> taskList;
@@ -23,6 +26,25 @@ public class TaskList {
         this.taskList = new ArrayList<>();
         this.isFinished = false;
     }
+
+    protected TaskList(Parcel in) {
+        listTitle = in.readString();
+        isFinished = in.readByte() != 0;
+        location = in.readString();
+
+    }
+
+    public static final Creator<TaskList> CREATOR = new Creator<TaskList>() {
+        @Override
+        public TaskList createFromParcel(Parcel in) {
+            return new TaskList(in);
+        }
+
+        @Override
+        public TaskList[] newArray(int size) {
+            return new TaskList[size];
+        }
+    };
 
     public void addTask(Task task) {
         this.taskList.add(task);
@@ -61,5 +83,17 @@ public class TaskList {
 
     public void setLocation(String newLocation){
         this.location = newLocation;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(listTitle);
+        dest.writeByte((byte) (isFinished ? 1 : 0));
+        dest.writeString(location);
     }
 }

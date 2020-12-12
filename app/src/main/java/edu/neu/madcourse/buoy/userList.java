@@ -201,6 +201,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
         for (int i = 0; i < this.parentAdapters.size(); i++) {
             ItemAdapter item = this.parentAdapters.get(i);
             ItemCard card  = itemCardArrayList.get(i);
+            TaskList taskList = userTaskList.get(i);
             //this.concatAdapter.addAdapter(item);
             int finalI = i;
 
@@ -221,7 +222,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
                     innerAdapters.remove(card);
                     itemCardArrayList.remove(card);
 
-                    userTaskList.remove(finalI);
+                    userTaskList.remove(taskList);
                     if (userTaskList.size() == 0) {
                         TaskList defaultList = new TaskList(PLACEHOLDERITEMCARD);
                         userTaskList.add(defaultList);
@@ -235,7 +236,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
 
                 @Override
                 public synchronized void onTodoAddPressed() {
-                    launchNewTaskDialogBox(item, finalI, card);
+                    launchNewTaskDialogBox(item, taskList, card);
                 }
 
                 @Override
@@ -493,9 +494,9 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
     }
 
     //Launch dialog fragment for adding a new task to given parent adapter and index.
-    private void launchNewTaskDialogBox(ItemAdapter parentAdapter, int parentIndex, ItemCard parentCard) {
+    private void launchNewTaskDialogBox(ItemAdapter parentAdapter, TaskList taskList, ItemCard parentCard) {
         FragmentManager fm = getSupportFragmentManager();
-        DialogFragment newDialog = AddTaskDialogFragment.newInstance(parentAdapter, parentIndex, parentCard);
+        DialogFragment newDialog = AddTaskDialogFragment.newInstance(parentAdapter, taskList, parentCard);
         newDialog.show(fm, "New Task");
     }
 
@@ -504,7 +505,7 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
     @Override
     public void onPositiveClick(AddTaskDialogFragment dialog) {
         String todo = dialog.getToDo();
-        int finalI = dialog.getParentIndex();
+        TaskList taskList = dialog.getParentTaskList();
         ItemAdapter item = dialog.getParentAdapter();
         ItemCard card = dialog.getParentCard();
         String date = dialog.getDate();
@@ -526,10 +527,15 @@ public class userList extends AppCompatActivity implements AddTaskDialogFragment
 
         dialog.dismiss();
 
-        if (card == null || cardTask == null) {
+        if (card == null) {
             Toast.makeText(userList.this, "Error making new task.", Toast.LENGTH_SHORT).show();
         } else {
-            userTaskList.get(finalI).getTaskList().add(cardTask); //add new task to user task list
+            for(int i = 0; i < userTaskList.size(); i++){
+                TaskList list = userTaskList.get(i);
+                if (list.getTaskList() == taskList.getTaskList() && list.getListTitle() == taskList.getListTitle()){
+                    list.getTaskList().add(cardTask);
+                }
+            }
             //listeners to make sure task is added successfully before adding to adapters.
             mdataBase.child("taskLists").setValue(userTaskList)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
