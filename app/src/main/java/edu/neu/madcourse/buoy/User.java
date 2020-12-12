@@ -218,14 +218,14 @@ public class User {
      * @return
      */
     public Task findSoonestTask() {
-        LocalDateTime minTime = LocalDateTime.now().minusYears(100);
+        LocalDateTime minTime = LocalDateTime.now().plusYears(100);
         Task current = new Task("PlaceHolder Task", null, null,
                 minTime.getYear(), minTime.getMonthValue(), minTime.getDayOfMonth(),
                 minTime.getHour(), minTime.getMinute());
         for(TaskList each : this.taskLists){
             for(Task eachTask : each.getTaskList()){
                 if(!eachTask.isCompleted()) { //if the task isn't completed
-                    if (current.isOtherTaskDueSooner(eachTask)) { //check if each task is due sooner than current
+                    if (!current.isOtherTaskDueSooner(eachTask)) { //check if each task is due sooner than current
                         current = eachTask; //if each task is due sooner than current, each task is set to current.
                     }
                 }

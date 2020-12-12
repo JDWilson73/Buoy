@@ -107,7 +107,7 @@ public class Task {
         this.subCategory = subCategory;
     }
 
-    //if isOtherTaskDueSooner is true, then other task is due sooner.
+    //if isOtherTaskDueSooner is true, then other task is due later.
     public boolean isOtherTaskDueSooner(Task other){
         LocalDateTime thisDue = LocalDateTime.parse(this.getDueDate(), formatter);
         LocalDateTime otherDue = LocalDateTime.parse(other.getDueDate(), formatter);
